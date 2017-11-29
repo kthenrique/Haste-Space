@@ -1,0 +1,15 @@
+xmc_usic.h:931:22:XMC_USIC_CH_SetInputTriggerCombinationMode	16	static
+xmc_usic.h:951:22:XMC_USIC_CH_SetBRGInputClockSource	16	static
+xmc_usic.c:79:6:XMC_USIC_CH_Enable	16	static
+xmc_usic.c:115:6:XMC_USIC_CH_Disable	16	static
+xmc_usic.c:120:22:XMC_USIC_CH_SetBaudrate	64	static
+xmc_usic.c:180:6:XMC_USIC_CH_ConfigExternalInputSignalToBRG	24	static
+xmc_usic.c:203:6:XMC_USIC_CH_TXFIFO_Configure	24	static
+xmc_usic.c:225:6:XMC_USIC_CH_RXFIFO_Configure	24	static
+xmc_usic.c:245:6:XMC_USIC_CH_TXFIFO_SetSizeTriggerLimit	24	static
+xmc_usic.c:260:6:XMC_USIC_CH_RXFIFO_SetSizeTriggerLimit	24	static
+xmc_usic.c:272:6:XMC_USIC_CH_SetInterruptNodePointer	24	static
+xmc_usic.c:280:6:XMC_USIC_CH_TXFIFO_SetInterruptNodePointer	24	static
+xmc_usic.c:288:6:XMC_USIC_CH_RXFIFO_SetInterruptNodePointer	24	static
+xmc_usic.c:296:6:XMC_USIC_Enable	16	static
+xmc_usic.c:335:6:XMC_USIC_Disable	16	static

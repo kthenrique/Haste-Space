@@ -1,0 +1,11 @@
+xmc_usic.h:1179:43:XMC_USIC_CH_GetTransmitBufferStatus	16	static
+xmc_usic.h:2073:22:XMC_USIC_CH_SetMode	16	static
+xmc_uart.h:533:26:XMC_UART_CH_GetStatusFlag	16	static
+xmc_uart.h:556:22:XMC_UART_CH_ClearStatusFlag	16	static
+xmc_uart.c:78:6:XMC_UART_CH_Init	24	static
+xmc_uart.c:134:22:XMC_UART_CH_SetBaudrate	32	static
+xmc_uart.c:150:6:XMC_UART_CH_Transmit	16	static
+xmc_uart.c:172:10:XMC_UART_CH_GetReceivedData	24	static
+xmc_uart.c:189:22:XMC_UART_CH_Stop	24	static
+xmc_uart.c:206:6:XMC_UART_CH_EnableEvent	16	static
+xmc_uart.c:212:6:XMC_UART_CH_DisableEvent	16	static

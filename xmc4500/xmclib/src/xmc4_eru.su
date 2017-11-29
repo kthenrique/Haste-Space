@@ -1,0 +1,2 @@
+xmc4_eru.c:53:6:XMC_ERU_Enable	16	static
+xmc4_eru.c:69:6:XMC_ERU_Disable	16	static

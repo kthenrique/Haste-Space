@@ -1,0 +1,14 @@
+xmc_usic.h:1179:43:XMC_USIC_CH_GetTransmitBufferStatus	16	static
+xmc_usic.h:1203:26:XMC_USIC_CH_GetReceiveBufferStatus	16	static
+xmc_usic.h:2073:22:XMC_USIC_CH_SetMode	16	static
+xmc_spi.h:630:22:XMC_SPI_CH_ClearStatusFlag	16	static
+xmc_spi.c:79:6:XMC_SPI_CH_Init	16	static
+xmc_spi.c:120:21:XMC_SPI_CH_SetBaudrate	24	static
+xmc_spi.c:137:6:XMC_SPI_CH_EnableSlaveSelect	16	static
+xmc_spi.c:145:6:XMC_SPI_CH_DisableSlaveSelect	16	static
+xmc_spi.c:154:6:XMC_SPI_CH_Transmit	16	static
+xmc_spi.c:179:10:XMC_SPI_CH_GetReceivedData	24	static
+xmc_spi.c:201:6:XMC_SPI_CH_SetInterwordDelay	64	static
+xmc_spi.c:255:21:XMC_SPI_CH_Stop	24	static
+xmc_spi.c:273:6:XMC_SPI_CH_EnableEvent	16	static
+xmc_spi.c:279:6:XMC_SPI_CH_DisableEvent	16	static

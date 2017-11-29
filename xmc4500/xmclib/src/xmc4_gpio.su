@@ -1,0 +1,2 @@
+xmc4_gpio.c:65:6:XMC_GPIO_Init	24	static
+xmc4_gpio.c:96:6:XMC_GPIO_SetOutputStrength	16	static

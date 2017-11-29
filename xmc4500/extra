@@ -1,0 +1,45 @@
+
+    /* 6D OF LIS3DH CONFIGURATION */
+    response = config_6d(5); 
+    if(response == 0){
+        _uart_printf("SET THRESHOLD: OK\n");
+        _uart_printf("SET INTERRUPT CONFIG.: OK\n");
+        _uart_printf("SET INTERRUPT MODE: OK\n");
+    }else
+        _uart_printf("ERROR: config_6d\n");
+
+
+        // Getting 6D Positions
+        response = LIS3DH_Get6DPosition(&position);
+        if((response==1) && (old_position!=position)){
+            switch (position){
+                case LIS3DH_UP_SX:   _uart_printf("D");   break;
+                case LIS3DH_UP_DX:   _uart_printf("R");   break;
+                case LIS3DH_DW_SX:   _uart_printf("L");   break;              
+                case LIS3DH_DW_DX:   _uart_printf("U");   break; 
+                case LIS3DH_TOP:     _uart_printf("T");   break; 
+                case LIS3DH_BOTTOM:  _uart_printf("B");   break; 
+                default:             _uart_printf("K");   break;
+            }
+
+            old_position = position;
+        }
+
+
+
+
+
+    /* FREE-FALL CONFIGURATION */
+    response = config_freefall();
+    if(response == 0){
+        _uart_printf("SET FREE-FALL: OK\n");
+    }
+
+
+
+        // Detecting free-fall
+        LIS3DH_ReadReg(LIS3DH_INT1_SRC, &value);
+        if(value == 0) 
+            _uart_printf("free-fall occurred");
+
+        LIS3DH_ResetInt1Latch();

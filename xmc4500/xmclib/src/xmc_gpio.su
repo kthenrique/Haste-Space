@@ -1,0 +1,2 @@
+xmc_gpio.c:65:6:XMC_GPIO_SetMode	16	static
+xmc_gpio.c:74:6:XMC_GPIO_SetHardwareControl	16	static

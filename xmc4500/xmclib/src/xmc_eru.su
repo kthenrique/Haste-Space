@@ -1,0 +1,14 @@
+xmc_eru.c:127:6:XMC_ERU_ETL_Init	24	static
+xmc_eru.c:144:6:XMC_ERU_OGU_Init	24	static
+xmc_eru.c:157:6:XMC_ERU_ETL_SetInput	16	static
+xmc_eru.c:173:6:XMC_ERU_ETL_SetSource	16	static
+xmc_eru.c:185:6:XMC_ERU_ETL_SetEdgeDetection	16	static
+xmc_eru.c:197:30:XMC_ERU_ETL_GetEdgeDetection	16	static
+xmc_eru.c:205:6:XMC_ERU_ETL_SetStatusFlagMode	16	static
+xmc_eru.c:218:6:XMC_ERU_ETL_EnableOutputTrigger	16	static
+xmc_eru.c:231:6:XMC_ERU_ETL_DisableOutputTrigger	16	static
+xmc_eru.c:240:6:XMC_ERU_OGU_EnablePatternDetection	16	static
+xmc_eru.c:253:6:XMC_ERU_OGU_DisablePatternDetection	16	static
+xmc_eru.c:262:6:XMC_ERU_OGU_EnablePeripheralTrigger	16	static
+xmc_eru.c:275:6:XMC_ERU_OGU_DisablePeripheralTrigger	16	static
+xmc_eru.c:285:6:XMC_ERU_OGU_SetServiceRequestMode	16	static
