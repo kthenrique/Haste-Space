@@ -17,6 +17,7 @@ pygame.init()
 # Define relevant colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+ORANGE= (233, 166, 31)
 
 # Define screen size and set it
 SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
@@ -27,7 +28,6 @@ initial_velocity = 1
 d_time = 0.0
 
 # Define stamps
-
 gameover_font = pygame.font.SysFont('symbola', 55, True, True)
 gameover_text = gameover_font.render("Game Over", True, WHITE)
 
@@ -41,7 +41,10 @@ target_sound = pygame.mixer.Sound("./assets/Audio/target.ogg")
 
 # Load graphics
 meteors_assets = os.listdir("./assets/Meteors")
-bg_img = pygame.image.load("./assets/bg.jpg").convert()
+bg_gameplay = pygame.image.load("./assets/Backdrop/bg_23.jpg").convert()
+bg_menu = pygame.image.load("./assets/Backdrop/bg_1.jpg").convert()
+title_img = pygame.image.load("./assets/title.png").convert()
+title_img.set_colorkey(BLACK)
 
 
 # Classes
@@ -49,7 +52,7 @@ class Ship(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
 
-        self.image = pygame.image.load("./assets/ship.png").convert()
+        self.image = pygame.image.load("./assets/Ship/ship.png").convert()
         self.image.set_colorkey(BLACK)
 
         self.rect = self.image.get_rect()
@@ -59,7 +62,7 @@ class Missile(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
 
-        self.image = pygame.image.load("./assets/fire.png").convert()
+        self.image = pygame.image.load("./assets/missile.png").convert()
         self.image.set_colorkey(BLACK)
 
         self.rect = self.image.get_rect()
@@ -140,17 +143,39 @@ class MenuScene():
 
     def __init__(self):
         self.next = self
+        self.counter = 0
+        self.dir = 1
 
-    def imputHandler(self, event):
-        pass
+        self.sprite_sheet = pygame.image.load("./assets/Ship/ship_anim.png").convert()
+        self.sprites = []
+        for i in range(24):
+            image = pygame.Surface([250, 250]).convert()
+            image.blit(self.sprite_sheet, (0,0), (250*i, 0, 250, 250))
+            image.set_colorkey(BLACK)
+            self.sprites.append(image)
+
+    def inputHandler(self, inputs):
+        for direction in str(inputs):
+            if direction == '2':
+               self.switch(GameplayScene())
 
     def update(self):
-        pass
+        if self.dir == 1:
+            self.counter += 0.2
+        else:
+            self.counter -= 0.2
 
-    def sceneRender(self):
-        pass
+        if self.counter > 22:
+            self.dir = 0
+        if self.counter < 1:
+            self.dir = 1
 
-    def switchScene(self, nextScene):
+    def render(self):
+        screen.blit(bg_menu, [0, 0])
+        screen.blit(title_img, [60, 60])
+        screen.blit(self.sprites[int(self.counter)], [500, 250])
+
+    def switch(self, nextScene):
         self.next = nextScene
 
 
@@ -191,7 +216,7 @@ class GameplayScene():
                 draw_sprites.add(missile)
                 ammo_sprites.add(missile)
             elif direction == '2':
-                print('Second Button pressed!')
+                self.switch(MenuScene())
 
 
     def update(self):#, meteor_sprites, ammo_sprites, draw_sprites):
@@ -220,17 +245,17 @@ class GameplayScene():
         if player.rect.y > SCREEN_HEIGHT - player.rect.size[1]:
             player.rect.y = SCREEN_HEIGHT - player.rect.size[1]
 
-    def render(self):
-        collided = False
+        self.collided = False
         # Collision recognition
         collision = pygame.sprite.spritecollide(player, meteor_sprites, False)
         if len(collision) != 0:
-           collided = True
+           self.collided = True
            # is_running = False
 
+    def render(self):
         # Main Scene
-        screen.blit(bg_img, [0, 0])
-        if collided:
+        screen.blit(bg_gameplay, [0, 0])
+        if self.collided:
             screen.blit(gameover_text, [gameover_text_x, gameover_text_y])
 
         score_text = self.score_font.render("Score: " + str(self.score), True, WHITE)
@@ -238,7 +263,7 @@ class GameplayScene():
         draw_sprites.draw(screen)
 
 
-    def switchScene(self, nextScene):
+    def switch(self, nextScene):
         self.next = nextScene
 
 
@@ -325,7 +350,7 @@ pygame.display.set_caption('Haste Space')
 
 # Variables
 fps = 60                         # Frames per Second
-active_scene = GameplayScene()    # state of game
+active_scene = MenuScene()#GameplayScene()    # state of game
 
 
 dir_tick = 0.0
