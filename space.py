@@ -23,6 +23,9 @@ ORANGE= (233, 166, 31)
 SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 screen = pygame.display.set_mode(SCREEN_SIZE)
 
+# Name the window
+pygame.display.set_caption('Haste Space')
+
 # Define initial velocity of Meteors
 initial_velocity = 1
 d_time = 0.0
@@ -45,6 +48,11 @@ bg_gameplay = pygame.image.load("./assets/Backdrop/bg_23.jpg").convert()
 bg_menu = pygame.image.load("./assets/Backdrop/bg_1.jpg").convert()
 title_img = pygame.image.load("./assets/title.png").convert()
 title_img.set_colorkey(BLACK)
+
+# For handling of sprites - groups
+draw_sprites = pygame.sprite.Group()        # sprites to draw
+meteor_sprites = pygame.sprite.Group()      # sprites of meteors
+ammo_sprites = pygame.sprite.Group()        # sprites of missiles
 
 
 # Classes
@@ -188,31 +196,53 @@ class GameplayScene():
     def __init__(self):
         self.next = self
         self.collided = False
+        # Instatiating actors
+        self.player = Ship()
+        self.player.rect.x = SCREEN_WIDTH/2 - 80
+        self.player.rect.y = SCREEN_HEIGHT-120
+        draw_sprites.add(self.player)
 
-    def inputHandler(self, inputs):#, player, draw_sprites, ammo_sprites):
+        for i in range(10):
+            # set random velocity
+            velocity = get_velocity()
+
+            # set random position
+            x = random.randrange(SCREEN_WIDTH  - 100)
+            y = random.randrange(SCREEN_HEIGHT - 300)
+
+            # new meteor
+            meteoroid = Meteor(i, euclid.Vector2(x, y), velocity )
+            meteoroid.update()
+
+            # update list of sprites
+            draw_sprites.add(meteoroid)
+            meteor_sprites.add(meteoroid)
+
+
+    def inputHandler(self, inputs):#, self.player, draw_sprites, ammo_sprites):
         # Control Ship with sensor
         for direction in str(inputs):
             if direction == 'R':
-                player.rect.x += 2
+                self.player.rect.x += 2
             elif direction == 'r':
-                player.rect.x += 1
+                self.player.rect.x += 1
             elif direction == 'L':
-                player.rect.x -= 2
+                self.player.rect.x -= 2
             elif direction == 'l':
-                player.rect.x -= 1
+                self.player.rect.x -= 1
             elif direction == 'U':
-                player.rect.y -= 2
+                self.player.rect.y -= 2
             elif direction == 'u':
-                player.rect.y -= 1
+                self.player.rect.y -= 1
             elif direction == 'D':
-                player.rect.y += 2
+                self.player.rect.y += 2
             elif direction == 'd':
-                player.rect.y += 1
+                self.player.rect.y += 1
             elif direction == '1':
                 shoot_sound.play()
                 missile = Missile()
-                missile.rect.x = player.rect.x + player.rect.size[0]/2
-                missile.rect.y = player.rect.y
+                missile.rect.x = self.player.rect.x + self.player.rect.size[0]/2
+                missile.rect.y = self.player.rect.y
                 draw_sprites.add(missile)
                 ammo_sprites.add(missile)
             elif direction == '2':
@@ -236,18 +266,18 @@ class GameplayScene():
         # update position of missiles
         ammo_sprites.update()
         # Determine edges avoiding scaping of scenario
-        if player.rect.x > SCREEN_WIDTH - player.rect.size[0]:
-            player.rect.x = SCREEN_WIDTH - player.rect.size[0]
-        if player.rect.x < 0:
-            player.rect.x = 0
-        if player.rect.y < 0:
-            player.rect.y = 0
-        if player.rect.y > SCREEN_HEIGHT - player.rect.size[1]:
-            player.rect.y = SCREEN_HEIGHT - player.rect.size[1]
+        if self.player.rect.x > SCREEN_WIDTH - self.player.rect.size[0]:
+            self.player.rect.x = SCREEN_WIDTH - self.player.rect.size[0]
+        if self.player.rect.x < 0:
+            self.player.rect.x = 0
+        if self.player.rect.y < 0:
+            self.player.rect.y = 0
+        if self.player.rect.y > SCREEN_HEIGHT - self.player.rect.size[1]:
+            self.player.rect.y = SCREEN_HEIGHT - self.player.rect.size[1]
 
         self.collided = False
         # Collision recognition
-        collision = pygame.sprite.spritecollide(player, meteor_sprites, False)
+        collision = pygame.sprite.spritecollide(self.player, meteor_sprites, False)
         if len(collision) != 0:
            self.collided = True
            # is_running = False
@@ -314,43 +344,15 @@ def get_velocity():
     vector *= initial_velocity
     return vector
 
-# Handling of sprites
-draw_sprites = pygame.sprite.Group()        # sprites to draw
-meteor_sprites = pygame.sprite.Group()      # sprites of meteors
-ammo_sprites = pygame.sprite.Group()        # sprites of missiles
-
-# Instatiating actors
-player = Ship()
-player.rect.x = SCREEN_WIDTH/2 - 80
-player.rect.y = SCREEN_HEIGHT-120
-draw_sprites.add(player)
-
-for i in range(10):
-    # set random velocity
-    velocity = get_velocity()
-
-    # set random position
-    x = random.randrange(SCREEN_WIDTH  - 100)
-    y = random.randrange(SCREEN_HEIGHT - 300)
-
-    # new meteor
-    meteoroid = Meteor(i, euclid.Vector2(x, y), velocity )
-    meteoroid.update()
-
-    # update list of sprites
-    draw_sprites.add(meteoroid)
-    meteor_sprites.add(meteoroid)
 
 
 # Get the Clock object
 clock = pygame.time.Clock()
 
-# Name the window
-pygame.display.set_caption('Haste Space')
 
 # Variables
 fps = 60                         # Frames per Second
-active_scene = MenuScene()#GameplayScene()    # state of game
+active_scene = MenuScene()       # state of game
 
 
 dir_tick = 0.0
