@@ -8,6 +8,9 @@ import serial
 import math
 import euclid
 
+# Set the port communication
+port = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.0)
+
 # Initialise Pygame
 pygame.init()
 
@@ -24,9 +27,6 @@ initial_velocity = 1
 d_time = 0.0
 
 # Define stamps
-score = 000
-score_font = pygame.font.SysFont('purisa', 25, True, True)
-score_text = score_font.render("Score: " + str(score), True, WHITE)
 
 gameover_font = pygame.font.SysFont('symbola', 55, True, True)
 gameover_text = gameover_font.render("Game Over", True, WHITE)
@@ -42,9 +42,6 @@ target_sound = pygame.mixer.Sound("./assets/Audio/target.ogg")
 # Load graphics
 meteors_assets = os.listdir("./assets/Meteors")
 bg_img = pygame.image.load("./assets/bg.jpg").convert()
-# ship_img = pygame.image.load("./assets/Sprites/Ships/spaceShips_008.png").convert()
-# ship_img.set_colorkey(BLACK)
-# meteor_img = pygame.image.load("./assets/Sprites/Meteors/spaceMeteors_001.png").convert()
 
 
 # Classes
@@ -91,12 +88,201 @@ class Meteor(pygame.sprite.Sprite):
     def update(self):
         self.position += self.velocity * d_time
         self.rect.x, self.rect.y = int(self.position.x), int(self.position.y)
-    
-        
+
+
+
+# Declaring the various scenes of the game:
+#   - VersionScene
+#   - MenuScene
+#   - GameplayScene
+#   - RecordScene
+#   - AboutScene
+
+
+class VersionScene():
+    """ Welcomming scene with title and version """
+
+    def __init__(self):
+        self.next = self
+        self.counter = 0
+
+    def imputHandler(self, event):
+        pass
+
+    def update(self):
+        if self.counter < 20:
+            screen.fill(BLACK)
+        else:
+            screen.fill(WHITE)
+
+        switchScene(GameplayScene())
+
+        pass
+
+    def sceneRender(self):
+        pass
+
+    def switchScene(self, nextScene):
+        if self.counter < 40:
+            pass
+        else:
+            self.next = nextScene
+            self.counter = 0
+
+
+class MenuScene():
+    """ Present buttons in menus:
+            - Game
+            - Record
+            - About
+            - Quit
+    """
+
+    def __init__(self):
+        self.next = self
+
+    def imputHandler(self, event):
+        pass
+
+    def update(self):
+        pass
+
+    def sceneRender(self):
+        pass
+
+    def switchScene(self, nextScene):
+        self.next = nextScene
+
+
+class GameplayScene():
+    """ Where the action takes place  """
+    score = 000
+    score_font = pygame.font.SysFont('purisa', 25, True, True)
+    score_text = score_font.render("Score: " + str(score), True, WHITE)
+
+    def __init__(self):
+        self.next = self
+        self.collided = False
+
+    def inputHandler(self, inputs):#, player, draw_sprites, ammo_sprites):
+        # Control Ship with sensor
+        for direction in str(inputs):
+            if direction == 'R':
+                player.rect.x += 2
+            elif direction == 'r':
+                player.rect.x += 1
+            elif direction == 'L':
+                player.rect.x -= 2
+            elif direction == 'l':
+                player.rect.x -= 1
+            elif direction == 'U':
+                player.rect.y -= 2
+            elif direction == 'u':
+                player.rect.y -= 1
+            elif direction == 'D':
+                player.rect.y += 2
+            elif direction == 'd':
+                player.rect.y += 1
+            elif direction == '1':
+                shoot_sound.play()
+                missile = Missile()
+                missile.rect.x = player.rect.x + player.rect.size[0]/2
+                missile.rect.y = player.rect.y
+                draw_sprites.add(missile)
+                ammo_sprites.add(missile)
+            elif direction == '2':
+                print('Second Button pressed!')
+
+
+    def update(self):#, meteor_sprites, ammo_sprites, draw_sprites):
+        # Target down recognition
+        for missile in ammo_sprites:
+            destroyed_meteor = pygame.sprite.spritecollide(missile, meteor_sprites, True)
+            for meteor in destroyed_meteor:
+                # target_sound.play()
+                ammo_sprites.remove(missile)
+                draw_sprites.remove(missile)
+                self.score += 1
+
+            if missile.rect.y < (-1 * missile.rect.size[1]):
+                ammo_sprites.remove(missile)
+                draw_sprites.remove(missile)
+
+        # update position of missiles
+        ammo_sprites.update()
+        # Determine edges avoiding scaping of scenario
+        if player.rect.x > SCREEN_WIDTH - player.rect.size[0]:
+            player.rect.x = SCREEN_WIDTH - player.rect.size[0]
+        if player.rect.x < 0:
+            player.rect.x = 0
+        if player.rect.y < 0:
+            player.rect.y = 0
+        if player.rect.y > SCREEN_HEIGHT - player.rect.size[1]:
+            player.rect.y = SCREEN_HEIGHT - player.rect.size[1]
+
+    def render(self):
+        collided = False
+        # Collision recognition
+        collision = pygame.sprite.spritecollide(player, meteor_sprites, False)
+        if len(collision) != 0:
+           collided = True
+           # is_running = False
+
+        # Main Scene
+        screen.blit(bg_img, [0, 0])
+        if collided:
+            screen.blit(gameover_text, [gameover_text_x, gameover_text_y])
+
+        score_text = self.score_font.render("Score: " + str(self.score), True, WHITE)
+        screen.blit(score_text, [10, 10])
+        draw_sprites.draw(screen)
+
+
+    def switchScene(self, nextScene):
+        self.next = nextScene
+
+
+class RecordScene():
+    """ Best score record """
+
+    def __init__(self):
+        self.next = self
+
+    def imputHandler(self, event):
+        pass
+
+    def update(self):
+        pass
+
+    def sceneRender(self):
+        pass
+
+    def switchScene(self, nextScene):
+        self.next = nextScene
+
+
+class AboutScene():
+    """ Authorship and credits """
+
+    def __init__(self):
+        self.next = self
+
+    def imputHandler(self, event):
+        pass
+
+    def update(self):
+        pass
+
+    def sceneRender(self):
+        pass
+
+    def switchScene(self, nextScene):
+        self.next = nextScene
+
 
 def get_velocity():
     angle = random.uniform(0, math.pi*2)
-    x_axis = math.sin(angle) 
+    x_axis = math.sin(angle)
     y_axis = math.cos(angle)
     vector = euclid.Vector2(x_axis, y_axis)
     vector.normalize()
@@ -104,9 +290,9 @@ def get_velocity():
     return vector
 
 # Handling of sprites
-draw_sprites = pygame.sprite.Group()
-meteor_sprites = pygame.sprite.Group()
-ammo_sprites = pygame.sprite.Group()
+draw_sprites = pygame.sprite.Group()        # sprites to draw
+meteor_sprites = pygame.sprite.Group()      # sprites of meteors
+ammo_sprites = pygame.sprite.Group()        # sprites of missiles
 
 # Instatiating actors
 player = Ship()
@@ -119,7 +305,7 @@ for i in range(10):
     velocity = get_velocity()
 
     # set random position
-    x = random.randrange(SCREEN_WIDTH)
+    x = random.randrange(SCREEN_WIDTH  - 100)
     y = random.randrange(SCREEN_HEIGHT - 300)
 
     # new meteor
@@ -138,15 +324,13 @@ clock = pygame.time.Clock()
 pygame.display.set_caption('Haste Space')
 
 # Variables
-fps = 60             # Frames per Second
-is_running = True    # state of game
+fps = 60                         # Frames per Second
+active_scene = GameplayScene()    # state of game
 
-# Set the port communication
-port = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.0)
 
-collided = False
 dir_tick = 0.0
-while is_running:
+
+while active_scene != None:
     # Limit the framerate
     d_time_ms = clock.tick(fps)
 
@@ -166,84 +350,19 @@ while is_running:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            is_running = False
+            active_scene = None
 
     # Read port for coord.
-    rcv = port.read(10)
-    
-    # Control Ship with sensor
-    for direction in str(rcv):
-        if direction == 'R':
-            player.rect.x += 2
-        elif direction == 'r':
-            player.rect.x += 1
-        elif direction == 'L':
-            player.rect.x -= 2
-        elif direction == 'l':
-            player.rect.x -= 1
-        elif direction == 'U':
-            player.rect.y -= 2
-        elif direction == 'u':
-            player.rect.y -= 1
-        elif direction == 'D':
-            player.rect.y += 2
-        elif direction == 'd':
-            player.rect.y += 1
-        elif direction == '1':
-            shoot_sound.play()
-            missile = Missile()
-            missile.rect.x = player.rect.x + player.rect.size[0]/2
-            missile.rect.y = player.rect.y
-            draw_sprites.add(missile)
-            ammo_sprites.add(missile)
-        elif direction == '2':
-            print('Second Button pressed!')
-
-    # Target down recognition
-    for missile in ammo_sprites:
-        destroyed_meteor = pygame.sprite.spritecollide(missile, meteor_sprites, True)
-        for meteor in destroyed_meteor:
-            # target_sound.play()
-            ammo_sprites.remove(missile)
-            draw_sprites.remove(missile)
-            score += 1
-
-        if missile.rect.y < (-1 * missile.rect.size[1]):
-            ammo_sprites.remove(missile)
-            draw_sprites.remove(missile)
-
-    # update position of missiles
-    ammo_sprites.update()
+    inputs = port.read(10)
 
     # flush buffer from port
     port.reset_input_buffer()
 
-    # Determine edges avoiding scaping of scenario
-    if player.rect.x > SCREEN_WIDTH - player.rect.size[0]:
-        player.rect.x = SCREEN_WIDTH - player.rect.size[0]
-    if player.rect.x < 0:
-        player.rect.x = 0
-    if player.rect.y < 0:
-        player.rect.y = 0
-    if player.rect.y > SCREEN_HEIGHT - player.rect.size[1]:
-        player.rect.y = SCREEN_HEIGHT - player.rect.size[1]
-
-           
-    # Collision recognition
-    collision = pygame.sprite.spritecollide(player, meteor_sprites, False)
-    if len(collision) != 0:
-       collided = True
-       # is_running = False
-
-
-    # Main Scene
-    screen.blit(bg_img, [0, 0])
-    if collided:
-        screen.blit(gameover_text, [gameover_text_x, gameover_text_y])
-
-    score_text = score_font.render("Score: " + str(score), True, WHITE)
-    screen.blit(score_text, [10, 10]) 
-    draw_sprites.draw(screen)
+    # Correspondent scene handling
+    active_scene.inputHandler(inputs)
+    active_scene.update()
+    active_scene.render()
+    active_scene = active_scene.next
 
     # Update screen
     pygame.display.flip()
