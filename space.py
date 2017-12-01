@@ -7,6 +7,7 @@ import sys
 import serial
 import math
 import euclid
+import re
 
 # Set the port communication
 port = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.0)
@@ -24,19 +25,13 @@ SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 screen = pygame.display.set_mode(SCREEN_SIZE)
 
 # Name the window
-pygame.display.set_caption('Haste Space')
+pygame.display.set_caption('HASTE SPACE')
 
 # Define initial velocity of Meteors
 initial_velocity = 1
 d_time = 0.0
 
-# Define stamps
-gameover_font = pygame.font.SysFont('symbola', 55, True, True)
-gameover_text = gameover_font.render("Game Over", True, WHITE)
-
-# gameover_text_rect = gameover_text.get_rect()
-gameover_text_x = screen.get_width() / 2 - 100 # gameover_text_rect.width / 2
-gameover_text_y = screen.get_height() / 2 - 100 # gameover_text_rect.height / 2
+SCORE = 000
 
 # Load sounds
 shoot_sound = pygame.mixer.Sound("./assets/Audio/laser.ogg")
@@ -44,10 +39,22 @@ target_sound = pygame.mixer.Sound("./assets/Audio/target.ogg")
 
 # Load graphics
 meteors_assets = os.listdir("./assets/Meteors")
+meteor_imgs = []
+for i in range(len(meteors_assets)):
+    new_meteor = pygame.image.load("./assets/Meteors/" + meteors_assets[i]).convert()
+    new_meteor.set_colorkey(BLACK)
+    meteor_imgs.append(new_meteor)
+
+title_assets = os.listdir("./assets/Title")
+title_assets = sorted(title_assets, key=lambda x: (int(re.sub('\D','',x)),x))
+title_imgs = []
+for i in range(len(title_assets)):
+    new_title = pygame.image.load("./assets/Title/" + title_assets[i]).convert()
+    new_title.set_colorkey(BLACK)
+    title_imgs.append(new_title)
+
 bg_gameplay = pygame.image.load("./assets/Backdrop/bg_23.jpg").convert()
 bg_menu = pygame.image.load("./assets/Backdrop/bg_1.jpg").convert()
-title_img = pygame.image.load("./assets/title.png").convert()
-title_img.set_colorkey(BLACK)
 
 # For handling of sprites - groups
 draw_sprites = pygame.sprite.Group()        # sprites to draw
@@ -111,7 +118,7 @@ class Meteor(pygame.sprite.Sprite):
 
 
 class VersionScene():
-    """ Welcomming scene with title and version """
+    """ Welcoming scene with title and version """
 
     def __init__(self):
         self.next = self
@@ -151,7 +158,8 @@ class MenuScene():
 
     def __init__(self):
         self.next = self
-        self.counter = 0
+        self.count_ship = 0
+        self.count_title = [-0.4, 0]
         self.dir = 1
 
         self.sprite_sheet = pygame.image.load("./assets/Ship/ship_anim.png").convert()
@@ -168,20 +176,29 @@ class MenuScene():
                self.switch(GameplayScene())
 
     def update(self):
-        if self.dir == 1:
-            self.counter += 0.2
+        if self.count_title[0] >= (len(title_imgs) - 0.4):
+            pass
         else:
-            self.counter -= 0.2
+            self.count_title[0] += 0.4
 
-        if self.counter > 22:
+        self.count_title[1] += 1
+        if self.count_title[1] == 300:
+            self.count_title = [-0.4, 0]
+
+        if self.dir == 1:
+            self.count_ship += 0.2
+        else:
+            self.count_ship -= 0.2
+
+        if self.count_ship > 22:
             self.dir = 0
-        if self.counter < 1:
+        if self.count_ship < 1:
             self.dir = 1
 
     def render(self):
         screen.blit(bg_menu, [0, 0])
-        screen.blit(title_img, [60, 60])
-        screen.blit(self.sprites[int(self.counter)], [500, 250])
+        screen.blit(title_imgs[int(self.count_title[0])], [60, 60])
+        screen.blit(self.sprites[int(self.count_ship)], [500, 250])
 
     def switch(self, nextScene):
         self.next = nextScene
@@ -189,9 +206,17 @@ class MenuScene():
 
 class GameplayScene():
     """ Where the action takes place  """
-    score = 000
+
+    # Define stamps
     score_font = pygame.font.SysFont('purisa', 25, True, True)
-    score_text = score_font.render("Score: " + str(score), True, WHITE)
+    score_text = score_font.render("Score: " + str(SCORE), True, WHITE)
+    gameover_font = pygame.font.SysFont('symbola', 55, True, True)
+    gameover_text = gameover_font.render("Game Over", True, WHITE)
+
+    # gameover_text_rect = gameover_text.get_rect()
+    gameover_text_x = screen.get_width() / 2 - 100 # gameover_text_rect.width / 2
+    gameover_text_y = screen.get_height() / 2 - 100 # gameover_text_rect.height / 2
+
 
     def __init__(self):
         self.next = self
@@ -257,7 +282,7 @@ class GameplayScene():
                 # target_sound.play()
                 ammo_sprites.remove(missile)
                 draw_sprites.remove(missile)
-                self.score += 1
+                SCORE += 1
 
             if missile.rect.y < (-1 * missile.rect.size[1]):
                 ammo_sprites.remove(missile)
@@ -288,7 +313,7 @@ class GameplayScene():
         if self.collided:
             screen.blit(gameover_text, [gameover_text_x, gameover_text_y])
 
-        score_text = self.score_font.render("Score: " + str(self.score), True, WHITE)
+        score_text = self.score_font.render("Score: " + str(SCORE), True, WHITE)
         screen.blit(score_text, [10, 10])
         draw_sprites.draw(screen)
 
