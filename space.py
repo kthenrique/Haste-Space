@@ -31,8 +31,6 @@ pygame.display.set_caption('HASTE SPACE')
 initial_velocity = 1
 d_time = 0.0
 
-SCORE = 000
-
 # Load sounds
 shoot_sound = pygame.mixer.Sound("./assets/Audio/laser.ogg")
 target_sound = pygame.mixer.Sound("./assets/Audio/target.ogg")
@@ -207,16 +205,18 @@ class MenuScene():
 class GameplayScene():
     """ Where the action takes place  """
 
+    # SCORE
+    score = 000
+
     # Define stamps
     score_font = pygame.font.SysFont('purisa', 25, True, True)
-    score_text = score_font.render("Score: " + str(SCORE), True, WHITE)
+    score_text = score_font.render("Score: " + str(score), True, WHITE)
     gameover_font = pygame.font.SysFont('symbola', 55, True, True)
     gameover_text = gameover_font.render("Game Over", True, WHITE)
 
     # gameover_text_rect = gameover_text.get_rect()
     gameover_text_x = screen.get_width() / 2 - 100 # gameover_text_rect.width / 2
     gameover_text_y = screen.get_height() / 2 - 100 # gameover_text_rect.height / 2
-
 
     def __init__(self):
         self.next = self
@@ -282,7 +282,7 @@ class GameplayScene():
                 # target_sound.play()
                 ammo_sprites.remove(missile)
                 draw_sprites.remove(missile)
-                SCORE += 1
+                self.score += 1
 
             if missile.rect.y < (-1 * missile.rect.size[1]):
                 ammo_sprites.remove(missile)
@@ -311,9 +311,9 @@ class GameplayScene():
         # Main Scene
         screen.blit(bg_gameplay, [0, 0])
         if self.collided:
-            screen.blit(gameover_text, [gameover_text_x, gameover_text_y])
+            screen.blit(self.gameover_text, [self.gameover_text_x, self.gameover_text_y])
 
-        score_text = self.score_font.render("Score: " + str(SCORE), True, WHITE)
+        score_text = self.score_font.render("Score: " + str(self.score), True, WHITE)
         screen.blit(score_text, [10, 10])
         draw_sprites.draw(screen)
 
