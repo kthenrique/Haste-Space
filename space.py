@@ -51,6 +51,14 @@ for i in range(len(title_assets)):
     new_title.set_colorkey(BLACK)
     title_imgs.append(new_title)
 
+buttons_assets = os.listdir("./assets/Buttons")
+buttons_assets = sorted(buttons_assets, key=lambda x: (int(re.sub('\D','',x)),x))
+button_imgs = []
+for i in range(len(buttons_assets)):
+    new_button = pygame.image.load("./assets/Buttons/" + buttons_assets[i]).convert()
+    new_button.set_colorkey(BLACK)
+    button_imgs.append(new_button)
+
 bg_gameplay = pygame.image.load("./assets/Backdrop/bg_23.jpg").convert()
 bg_menu = pygame.image.load("./assets/Backdrop/bg_1.jpg").convert()
 
@@ -159,6 +167,10 @@ class MenuScene():
         self.count_ship = 0
         self.count_title = [-0.4, 0]
         self.dir = 1
+        self.active_button = 0
+        self.one_down = False
+        self.one_up   = False
+        self.read     = 0
 
         self.sprite_sheet = pygame.image.load("./assets/Ship/ship_anim.png").convert()
         self.sprites = []
@@ -171,9 +183,23 @@ class MenuScene():
     def inputHandler(self, inputs):
         for direction in str(inputs):
             if direction == '2':
-               self.switch(GameplayScene())
+                if self.active_button == 0:
+                   self.switch(GameplayScene())
+                if self.active_button == 1:
+                   pass
+                   # self.switch(RecordScene())
+                if self.active_button == 2:
+                   pass
+                   # self.switch(AboutScene())
+                if self.active_button == 3:
+                   self.switch(None)
+            elif direction == 'D':
+               self.one_down = True
+            elif direction == 'U':
+               self.one_up = True
 
     def update(self):
+        # Handling animation of title
         if self.count_title[0] >= (len(title_imgs) - 0.4):
             pass
         else:
@@ -183,6 +209,7 @@ class MenuScene():
         if self.count_title[1] == 300:
             self.count_title = [-0.4, 0]
 
+        # Handling animation of ship
         if self.dir == 1:
             self.count_ship += 0.2
         else:
@@ -193,10 +220,44 @@ class MenuScene():
         if self.count_ship < 1:
             self.dir = 1
 
+        # Handling buttons
+        self.read += 1
+        if self.read == 15:
+            if self.one_down:
+                self.active_button += 1
+            if self.one_up:
+                self.active_button -= 1
+            self.read = 0
+
+        self.one_down = False
+        self.one_up   = False
+
+        if self.active_button >= 4:
+            self.active_button = 0
+        if self.active_button <= -1:
+            self.active_button = 3
+
     def render(self):
         screen.blit(bg_menu, [0, 0])
         screen.blit(title_imgs[int(self.count_title[0])], [60, 60])
         screen.blit(self.sprites[int(self.count_ship)], [500, 250])
+        if self.active_button == 0:
+            screen.blit(button_imgs[0], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5])
+        else:
+            screen.blit(button_imgs[1], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5])
+        if self.active_button == 1:
+            screen.blit(button_imgs[3], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5+70])
+        else:
+            screen.blit(button_imgs[2], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5+70])
+        if self.active_button == 2:
+            screen.blit(button_imgs[4], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5+140])
+        else:
+            screen.blit(button_imgs[5], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5+140])
+        if self.active_button == 3:
+            screen.blit(button_imgs[7], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5+210])
+        else:
+            screen.blit(button_imgs[6], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5+210])
+
 
     def switch(self, nextScene):
         self.next = nextScene
@@ -400,10 +461,6 @@ while active_scene != None:
                 met.update()
                 break
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            active_scene = None
-
     # Read port for coord.
     inputs = port.read(10)
 
@@ -415,6 +472,10 @@ while active_scene != None:
     active_scene.update()
     active_scene.render()
     active_scene = active_scene.next
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            active_scene = None
 
     # Update screen
     pygame.display.flip()

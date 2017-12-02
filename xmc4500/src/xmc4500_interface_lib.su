@@ -1,5 +1,0 @@
-xmc4500_interface_lib.c:22:6:init_interface	24	static
-xmc4500_interface_lib.c:54:6:check_button	8	static
-xmc4500_interface_lib.c:73:6:init_buff	4	static
-xmc4500_interface_lib.c:85:6:write_buff	16	static
-xmc4500_interface_lib.c:103:9:read_buff	16	static

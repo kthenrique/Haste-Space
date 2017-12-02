@@ -1,5 +1,0 @@
-core_cm4.h:1798:22:__NVIC_SetPriority	16	static
-core_cm4.h:1996:26:SysTick_Config	16	static
-xmc_gpio.h:308:22:XMC_GPIO_ToggleOutput	16	static
-main.c:33:6:SysTick_Handler	8	static
-main.c:51:5:main	16	static

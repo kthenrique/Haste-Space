@@ -1,9 +1,0 @@
-xmc_posif.h:580:22:XMC_POSIF_Stop	16	static
-xmc_posif.c:101:6:XMC_POSIF_Enable	16	static
-xmc_posif.c:134:6:XMC_POSIF_Disable	16	static
-xmc_posif.c:163:6:XMC_POSIF_Init	16	static
-xmc_posif.c:179:20:XMC_POSIF_HSC_Init	24	static
-xmc_posif.c:199:20:XMC_POSIF_QD_Init	24	static
-xmc_posif.c:226:20:XMC_POSIF_MCM_Init	24	static
-xmc_posif.c:246:6:XMC_POSIF_SelectInputSource	24	static
-xmc_posif.c:262:6:XMC_POSIF_SetInterruptNode	24	static

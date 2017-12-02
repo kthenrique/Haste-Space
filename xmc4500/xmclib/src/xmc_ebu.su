@@ -1,4 +1,0 @@
-xmc_ebu.h:1113:22:XMC_EBU_Enable	16	static
-xmc_ebu.c:63:18:XMC_EBU_Init	16	static
-xmc_ebu.c:86:6:XMC_EBU_ConfigureSdram	16	static
-xmc_ebu.c:102:6:XMC_EBU_ConfigureRegion	16	static

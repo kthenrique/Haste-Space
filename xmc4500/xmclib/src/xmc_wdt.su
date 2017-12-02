@@ -1,3 +1,0 @@
-xmc_wdt.c:59:6:XMC_WDT_Enable	8	static
-xmc_wdt.c:74:6:XMC_WDT_Disable	8	static
-xmc_wdt.c:88:6:XMC_WDT_Init	16	static

@@ -96,13 +96,13 @@ int main (void){
         if(response==1){
             //print data values
             if(data.AXIS_X >  2000) _uart_send_char('r');
-            if(data.AXIS_X >  5000) _uart_send_char('R');
+            if(data.AXIS_X >  6000) _uart_send_char('R');
             if(data.AXIS_X < -2000) _uart_send_char('l');
-            if(data.AXIS_X < -5000) _uart_send_char('L');
+            if(data.AXIS_X < -6000) _uart_send_char('L');
             if(data.AXIS_Y >  2000) _uart_send_char('u');
-            if(data.AXIS_Y >  5000) _uart_send_char('U');
+            if(data.AXIS_Y >  6000) _uart_send_char('U');
             if(data.AXIS_Y < -2000) _uart_send_char('d');
-            if(data.AXIS_Y < -5000) _uart_send_char('D');
+            if(data.AXIS_Y < -6000) _uart_send_char('D');
           ///  if(data.AXIS_Z >  2000) _uart_send_char('T');
           ///  if(data.AXIS_Z < -2000) _uart_send_char('B');
 

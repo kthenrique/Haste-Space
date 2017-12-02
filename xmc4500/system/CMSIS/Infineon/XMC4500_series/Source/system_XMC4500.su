@@ -1,6 +1,0 @@
-system_XMC4500.c:317:13:delay	24	static
-system_XMC4500.c:331:13:SystemInit	16	static
-system_XMC4500.c:339:13:SystemCoreSetup	16	static
-system_XMC4500.c:363:13:SystemCoreClockSetup	8	static
-system_XMC4500.c:634:13:SystemCoreClockUpdate	24	static
-system_XMC4500.c:687:17:OSCHP_GetFrequency	4	static

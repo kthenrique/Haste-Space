@@ -1,3 +1,0 @@
-lis3dh_lib.c:13:9:init_lis3dh	24	static
-lis3dh_lib.c:40:9:config_6d	24	static
-lis3dh_lib.c:65:9:config_freefall	8	static
