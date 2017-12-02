@@ -246,17 +246,17 @@ class MenuScene():
         else:
             screen.blit(button_imgs[1], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5])
         if self.active_button == 1:
-            screen.blit(button_imgs[3], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5+70])
-        else:
             screen.blit(button_imgs[2], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5+70])
+        else:
+            screen.blit(button_imgs[3], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5+70])
         if self.active_button == 2:
             screen.blit(button_imgs[4], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5+140])
         else:
             screen.blit(button_imgs[5], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5+140])
         if self.active_button == 3:
-            screen.blit(button_imgs[7], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5+210])
-        else:
             screen.blit(button_imgs[6], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5+210])
+        else:
+            screen.blit(button_imgs[7], [SCREEN_WIDTH/5, 2*SCREEN_HEIGHT/5+210])
 
 
     def switch(self, nextScene):
