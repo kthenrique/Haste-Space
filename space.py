@@ -19,6 +19,7 @@ pygame.init()
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 ORANGE= (233, 166, 31)
+BLUE  = (95, 198, 207)
 
 # Define screen size and set it
 SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
@@ -61,6 +62,7 @@ for i in range(len(buttons_assets)):
 
 bg_gameplay = pygame.image.load("./assets/Backdrop/bg_23.jpg").convert()
 bg_menu = pygame.image.load("./assets/Backdrop/bg_1.jpg").convert()
+bg_version = pygame.image.load("./assets/Backdrop/bg_21.png").convert()
 
 # For handling of sprites - groups
 draw_sprites = pygame.sprite.Group()        # sprites to draw
@@ -126,32 +128,58 @@ class Meteor(pygame.sprite.Sprite):
 class VersionScene():
     """ Welcoming scene with title and version """
 
+    # VERSION & CONTINUE
+    version = "Version 1.0"
+    press   = "Press button 2 to continue. . ."
+
+    # Define stamps
+    version_font = pygame.font.SysFont('arial', 20, True, True)
+    version_text = version_font.render(version, True, ORANGE)
+
+    press_font = pygame.font.SysFont('arial', 20, True, True)
+    press_text = press_font.render(press, True, BLUE)
+    press_surface = pygame.Surface((500, 20)).convert()
+    press_surface.fill(BLACK)
+    press_surface.blit(press_text, (0, 0, 10, 10))
+    press_surface.set_colorkey(BLACK)
+
     def __init__(self):
         self.next = self
-        self.counter = 0
+        self.count_title = [-0.4, 0]
+        self.count_press = 0
+        self.show_msg = False
 
-    def imputHandler(self, event):
-        pass
+    def inputHandler(self, event):
+        for direction in str(inputs):
+            if direction == '2':
+                   self.switch(MenuScene())
+
 
     def update(self):
-        if self.counter < 20:
-            screen.fill(BLACK)
-        else:
-            screen.fill(WHITE)
-
-        switchScene(GameplayScene())
-
-        pass
-
-    def sceneRender(self):
-        pass
-
-    def switchScene(self, nextScene):
-        if self.counter < 40:
+        # Handling animation of title
+        if self.count_title[0] >= (len(title_imgs) - 0.4):
+            self.show_msg = True
             pass
         else:
+            self.count_title[0] += 0.4
+
+        self.count_title[1] += 1
+        self.count_press += 1
+        if self.count_title[1] == 300:
+            self.count_title = [-0.4, 0]
+
+
+    def render(self):
+        screen.blit(bg_version, [0, 0])
+        screen.blit(title_imgs[int(self.count_title[0])], [60, SCREEN_HEIGHT/3])
+        screen.blit(self.version_text, [6*SCREEN_WIDTH/8, 3*SCREEN_HEIGHT/6])
+        if self.show_msg == True:
+            self.press_surface.set_alpha(self.count_title[1])
+            screen.blit(self.press_surface, [3*SCREEN_WIDTH/9, 5*SCREEN_HEIGHT/6])
+            
+
+    def switch(self, nextScene):
             self.next = nextScene
-            self.counter = 0
 
 
 class MenuScene():
@@ -438,7 +466,7 @@ clock = pygame.time.Clock()
 
 # Variables
 fps = 60                         # Frames per Second
-active_scene = MenuScene()       # state of game
+active_scene = VersionScene()       # state of game
 
 
 dir_tick = 0.0
