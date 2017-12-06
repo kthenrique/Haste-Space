@@ -399,12 +399,14 @@ class GameplayScene():
     def render(self):
         # Main Scene
         screen.blit(bg_gameplay, [0, 0])
+
+        draw_sprites.draw(screen)
         if self.collided:
             screen.blit(self.gameover_text, [self.gameover_text_x, self.gameover_text_y])
-
         score_text = self.score_font.render("Score: " + str(self.score), True, WHITE)
         screen.blit(score_text, [10, 10])
-        draw_sprites.draw(screen)
+        if self.collided:
+            screen.blit(self.gameover_text, [self.gameover_text_x, self.gameover_text_y])
 
 
     def switch(self, nextScene):
