@@ -1,0 +1,12 @@
+# python caches
+__pycache__
+
+# doc and bin files inside xmc4500
+/xmc4500/bin/
+/xmc4500/doc/
+
+# library
+# euclid.py
+
+# swp files
+*.swp

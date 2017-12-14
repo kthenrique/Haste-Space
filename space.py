@@ -467,7 +467,7 @@ clock = pygame.time.Clock()
 
 
 # Variables
-fps = 60                         # Frames per Second
+fps = 60                            # Frames per Second
 active_scene = VersionScene()       # state of game
 
 
