@@ -1,7 +1,7 @@
 # BEL3: ESS Project - Haste-Space
 
 ### Requested Devices
-XMC4500 - Infineon  
+XMC4500 - Infinion  
 LIS3DH - 3-axis acceleration sensor  
 
 ### Requested Software

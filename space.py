@@ -8,9 +8,21 @@ import serial
 import math
 import euclid
 import re
+from sys import platform as _platform
 
 # Set the port communication
-port = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.0)
+
+# Set up the port for linux
+if _platform == "linux" or _platform == "linux2":
+    port = serial.Serial('/dev/ttyUSB0', 115200, timeout=0.0)
+
+# Set up the port for macos
+elif _platform == "darwin":
+    port = serial.Serial('/dev/tty.usbserial', 115200, timeout=0.0)
+
+# Set up the port for windows
+elif _platform == "win32" or _platform == "win64":
+    port = serial.Serial('COM1', 115200, timeout=0.0)
 
 # Initialise Pygame
 pygame.init()
