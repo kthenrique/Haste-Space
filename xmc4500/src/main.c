@@ -13,8 +13,10 @@
  * UART_RX P1_4 -> CABLE_TX
  *
  * I2C communication with the LIS3DH Accelerometer Sensor
- * TCS3471_SDA_PIN 			P0_5
- * TCS3471_SCL_PIN 			P0_11
+ * LIS3DH_Vin               VDD3
+ * LIS3DH_GND               GND
+ * LIS3DH_SDA_PIN 			P0_6
+ * LIS3DH_SCL_PIN 			P0_2
  *
  * History <br>
  *

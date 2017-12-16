@@ -5,6 +5,11 @@ __pycache__
 /xmc4500/bin/
 /xmc4500/doc/
 
+# automated generated files of Makefile 
+*.d
+*.o
+*.su
+
 # library
 # euclid.py
 
