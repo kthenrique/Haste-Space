@@ -6,7 +6,6 @@ import os
 import sys
 import serial
 import math
-import euclid
 import re
 from sys import platform as _platform
 
@@ -130,7 +129,7 @@ class Missile(pygame.sprite.Sprite):
 
 class Meteor(pygame.sprite.Sprite):
 
-    def __init__(self, offset, position, velocity = euclid.Vector2(0,0)):
+    def __init__(self, offset, position=(1,1), velocity=(1,1)):
         super().__init__()
         self.offset = offset
         self.position = position
@@ -146,8 +145,9 @@ class Meteor(pygame.sprite.Sprite):
         self.velocity = velocity
 
     def update(self):
-        self.position += self.velocity * d_time
-        self.rect.x, self.rect.y = int(self.position.x), int(self.position.y)
+        self.position = self.velocity * d_time
+        self.rect.x = 10
+        self.rect.y = 10
 
 
 
@@ -351,14 +351,14 @@ class GameplayScene():
 
         for i in range(10):
             # set random velocity
-            velocity = get_velocity()
+            velocity = 1
 
             # set random position
             x = random.randrange(SCREEN_WIDTH  - 100)
             y = random.randrange(SCREEN_HEIGHT - 300)
 
             # new meteor
-            meteoroid = Meteor(i, euclid.Vector2(x, y), velocity )
+            meteoroid = Meteor(i, (1,2), velocity )
             meteoroid.update()
 
             # update list of sprites
@@ -538,17 +538,6 @@ class AboutScene():
         self.next = nextScene
 
 
-def get_velocity():
-    angle = random.uniform(0, math.pi*2)
-    x_axis = math.sin(angle)
-    y_axis = math.cos(angle)
-    vector = euclid.Vector2(x_axis, y_axis)
-    vector.normalize()
-    vector *= initial_velocity
-    return vector
-
-
-
 # Get the Clock object
 clock = pygame.time.Clock()
 
@@ -567,16 +556,6 @@ while active_scene != None:
     # Adjusting Meteors on the screen
     d_time = d_time_ms / 8
     dir_tick += d_time
-
-    if dir_tick > 1.0:
-        dir_tick = 0
-        new_velocity = get_velocity()
-        one_random = random.randrange(10)
-        for met in meteor_sprites:
-            if met.offset == one_random:
-                met.set_velocity(new_velocity)
-                met.update()
-                break
 
     # Read port for coord.
     inputs = port.read(10)
