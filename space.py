@@ -75,6 +75,15 @@ for i in range(len(about_assets)):
     new_about.set_colorkey(BLACK)
     about_imgs.append(new_about)
 
+record_assets = os.listdir("./assets/Record")
+record_assets = sorted(record_assets, key=lambda x: (int(re.sub('\D','',x)),x))
+record_imgs = []
+for i in range(len(record_assets)):
+    new_record = pygame.image.load("./assets/Record/" + record_assets[i]).convert()
+    new_record.set_colorkey(BLACK)
+    record_imgs.append(new_record)
+
+
 buttons_assets = os.listdir("./assets/Buttons")
 buttons_assets = sorted(buttons_assets, key=lambda x: (int(re.sub('\D','',x)),x))
 button_imgs = []
@@ -87,6 +96,7 @@ bg_gameplay = pygame.image.load("./assets/Backdrop/bg_23.jpg").convert()
 bg_menu = pygame.image.load("./assets/Backdrop/bg_1.jpg").convert()
 bg_version = pygame.image.load("./assets/Backdrop/bg_21.png").convert()
 bg_about = pygame.image.load("./assets/Backdrop/bg_5.png").convert()
+bg_record = pygame.image.load("./assets/Backdrop/bg_4.png").convert()
 
 # For handling of sprites - groups
 draw_sprites = pygame.sprite.Group()        # sprites to draw
@@ -238,8 +248,7 @@ class MenuScene():
                 if self.active_button == 0:
                    self.switch(GameplayScene())
                 if self.active_button == 1:
-                   pass
-                   # self.switch(RecordScene())
+                   self.switch(RecordScene())
                 if self.active_button == 2:
                    self.switch(AboutScene())
                 if self.active_button == 3:
@@ -441,17 +450,29 @@ class RecordScene():
 
     def __init__(self):
         self.next = self
+        self.count_record = [-0.4, 0]
 
-    def imputHandler(self, event):
-        pass
+    def inputHandler(self, event):
+        for direction in str(inputs):
+            if direction == '2':
+                   self.switch(MenuScene())
 
     def update(self):
-        pass
+        # Handling animation of title
+        if self.count_record[0] >= (len(record_imgs) - 0.4):
+            pass
+        else:
+            self.count_record[0] += 0.3
 
-    def sceneRender(self):
-        pass
+        self.count_record[1] += 1
+        if self.count_record[1] == 300:
+            self.count_record = [-0.4, 0]
 
-    def switchScene(self, nextScene):
+    def render(self):
+        screen.blit(bg_record, [0, 0])
+        screen.blit(record_imgs[int(self.count_record[0])], [SCREEN_WIDTH/5, 60])
+
+    def switch(self, nextScene):
         self.next = nextScene
 
 
