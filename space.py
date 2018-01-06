@@ -341,6 +341,7 @@ class GameplayScene():
 
     def __init__(self):
         self.next = self
+        self.pause = False
         self.collided = False
         # Instatiating actors
         self.player = Ship()
@@ -368,65 +369,76 @@ class GameplayScene():
     def inputHandler(self, inputs):#, self.player, draw_sprites, ammo_sprites):
         # Control Ship with sensor
         for direction in str(inputs):
-            if direction == 'R':
-                self.player.rect.x += 2
-            elif direction == 'r':
-                self.player.rect.x += 1
-            elif direction == 'L':
-                self.player.rect.x -= 2
-            elif direction == 'l':
-                self.player.rect.x -= 1
-            elif direction == 'U':
-                self.player.rect.y -= 2
-            elif direction == 'u':
-                self.player.rect.y -= 1
-            elif direction == 'D':
-                self.player.rect.y += 2
-            elif direction == 'd':
-                self.player.rect.y += 1
-            elif direction == '1':
-                shoot_sound.play()
-                missile = Missile()
-                missile.rect.x = self.player.rect.x + self.player.rect.size[0]/2
-                missile.rect.y = self.player.rect.y
-                draw_sprites.add(missile)
-                ammo_sprites.add(missile)
+            if self.pause is False:
+                if direction == 'R':
+                    self.player.rect.x += 2
+                elif direction == 'r':
+                    self.player.rect.x += 1
+                elif direction == 'L':
+                    self.player.rect.x -= 2
+                elif direction == 'l':
+                    self.player.rect.x -= 1
+                elif direction == 'U':
+                    self.player.rect.y -= 2
+                elif direction == 'u':
+                    self.player.rect.y -= 1
+                elif direction == 'D':
+                    self.player.rect.y += 2
+                elif direction == 'd':
+                    self.player.rect.y += 1
+                elif direction == '1':
+                    shoot_sound.play()
+                    missile = Missile()
+                    missile.rect.x = self.player.rect.x + self.player.rect.size[0]/2
+                    missile.rect.y = self.player.rect.y
+                    draw_sprites.add(missile)
+                    ammo_sprites.add(missile)
+                elif direction == '2':
+                    self.pause = not self.pause
+                    #self.switch(MenuScene())
             elif direction == '2':
+                self.pause = not self.pause
+                #self.switch(MenuScene())
+            elif direction == '1':
                 self.switch(MenuScene())
 
 
+
     def update(self):#, meteor_sprites, ammo_sprites, draw_sprites):
-        # Target down recognition
-        for missile in ammo_sprites:
-            destroyed_meteor = pygame.sprite.spritecollide(missile, meteor_sprites, True)
-            for meteor in destroyed_meteor:
-                # target_sound.play()
-                ammo_sprites.remove(missile)
-                draw_sprites.remove(missile)
-                self.score += 1
+        if self.pause is False:
+            # Target down recognition
+            for missile in ammo_sprites:
+                destroyed_meteor = pygame.sprite.spritecollide(missile, meteor_sprites, True)
+                for meteor in destroyed_meteor:
+                    # target_sound.play()
+                    ammo_sprites.remove(missile)
+                    draw_sprites.remove(missile)
+                    self.score += 1
 
-            if missile.rect.y < (-1 * missile.rect.size[1]):
-                ammo_sprites.remove(missile)
-                draw_sprites.remove(missile)
+                if missile.rect.y < (-1 * missile.rect.size[1]):
+                    ammo_sprites.remove(missile)
+                    draw_sprites.remove(missile)
 
-        # update position of missiles
-        ammo_sprites.update()
-        # Determine edges avoiding scaping of scenario
-        if self.player.rect.x > SCREEN_WIDTH - self.player.rect.size[0]:
-            self.player.rect.x = SCREEN_WIDTH - self.player.rect.size[0]
-        if self.player.rect.x < 0:
-            self.player.rect.x = 0
-        if self.player.rect.y < 0:
-            self.player.rect.y = 0
-        if self.player.rect.y > SCREEN_HEIGHT - self.player.rect.size[1]:
-            self.player.rect.y = SCREEN_HEIGHT - self.player.rect.size[1]
+            # update position of missiles
+            ammo_sprites.update()
+            # Determine edges avoiding scaping of scenario
+            if self.player.rect.x > SCREEN_WIDTH - self.player.rect.size[0]:
+                self.player.rect.x = SCREEN_WIDTH - self.player.rect.size[0]
+            if self.player.rect.x < 0:
+                self.player.rect.x = 0
+            if self.player.rect.y < 0:
+                self.player.rect.y = 0
+            if self.player.rect.y > SCREEN_HEIGHT - self.player.rect.size[1]:
+                self.player.rect.y = SCREEN_HEIGHT - self.player.rect.size[1]
 
-        self.collided = False
-        # Collision recognition
-        collision = pygame.sprite.spritecollide(self.player, meteor_sprites, False)
-        if len(collision) != 0:
-           self.collided = True
-           # is_running = False
+            self.collided = False
+            # Collision recognition
+            collision = pygame.sprite.spritecollide(self.player, meteor_sprites, False)
+            if len(collision) != 0:
+                self.collided = True
+                # is_running = False
+        else:
+            pass
 
     def render(self):
         # Main Scene
