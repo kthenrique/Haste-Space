@@ -67,6 +67,14 @@ for i in range(len(title_assets)):
     new_title.set_colorkey(BLACK)
     title_imgs.append(new_title)
 
+about_assets = os.listdir("./assets/About")
+about_assets = sorted(about_assets, key=lambda x: (int(re.sub('\D','',x)),x))
+about_imgs = []
+for i in range(len(about_assets)):
+    new_about = pygame.image.load("./assets/About/" + about_assets[i]).convert()
+    new_about.set_colorkey(BLACK)
+    about_imgs.append(new_about)
+
 buttons_assets = os.listdir("./assets/Buttons")
 buttons_assets = sorted(buttons_assets, key=lambda x: (int(re.sub('\D','',x)),x))
 button_imgs = []
@@ -78,7 +86,7 @@ for i in range(len(buttons_assets)):
 bg_gameplay = pygame.image.load("./assets/Backdrop/bg_23.jpg").convert()
 bg_menu = pygame.image.load("./assets/Backdrop/bg_1.jpg").convert()
 bg_version = pygame.image.load("./assets/Backdrop/bg_21.png").convert()
-bg_about = pygame.image.load("./assets/Backdrop/bg_22.png").convert()
+bg_about = pygame.image.load("./assets/Backdrop/bg_5.png").convert()
 
 # For handling of sprites - groups
 draw_sprites = pygame.sprite.Group()        # sprites to draw
@@ -464,7 +472,7 @@ class AboutScene():
 
     def __init__(self):
         self.next = self
-        self.count_title = [-0.4, 0]
+        self.count_about = [-0.4, 0]
 
     def inputHandler(self, event):
         for direction in str(inputs):
@@ -473,19 +481,20 @@ class AboutScene():
 
     def update(self):
         # Handling animation of title
-        if self.count_title[0] >= (len(title_imgs) - 0.4):
+        if self.count_about[0] >= (len(about_imgs) - 0.4):
             pass
         else:
-            self.count_title[0] += 0.4
+            self.count_about[0] += 0.3
 
-        self.count_title[1] += 1
-        if self.count_title[1] == 300:
-            self.count_title = [-0.4, 0]
+        self.count_about[1] += 1
+        if self.count_about[1] == 300:
+            self.count_about = [-0.4, 0]
 
 
     def render(self):
         screen.blit(bg_about, [0, 0])
-        screen.blit(title_imgs[int(self.count_title[0])], [60, 60])
+        screen.blit(about_imgs[int(self.count_about[0])], [SCREEN_WIDTH/4, 60])
+#        screen.blit(title_imgs[int(self.count_title[0])], [60, 60])
 #        screen.blit(self.how_text,       [SCREEN_WIDTH/3, SCREEN_HEIGHT/6 + 100])
         screen.blit(self.body1_text,     [SCREEN_WIDTH/5, SCREEN_HEIGHT/6 + 150])
         screen.blit(self.body2_text,     [SCREEN_WIDTH/5, SCREEN_HEIGHT/6 + 200])
