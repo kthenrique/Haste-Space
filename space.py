@@ -511,17 +511,16 @@ class AboutScene():
         if self.count_about[1] == 300:
             self.count_about = [-0.4, 0]
 
-
     def render(self):
         screen.blit(bg_about, [0, 0])
         screen.blit(about_imgs[int(self.count_about[0])], [SCREEN_WIDTH/4, 60])
 #        screen.blit(title_imgs[int(self.count_title[0])], [60, 60])
 #        screen.blit(self.how_text,       [SCREEN_WIDTH/3, SCREEN_HEIGHT/6 + 100])
-        screen.blit(self.body1_text,     [SCREEN_WIDTH/5, SCREEN_HEIGHT/6 + 150])
-        screen.blit(self.body2_text,     [SCREEN_WIDTH/5, SCREEN_HEIGHT/6 + 200])
-        screen.blit(self.body3_text,     [SCREEN_WIDTH/5, SCREEN_HEIGHT/6 + 250])
-        screen.blit(self.credits_text,   [SCREEN_WIDTH/5 - 10, SCREEN_HEIGHT - 100])
-        screen.blit(self.copyright_text, [SCREEN_WIDTH/4 - 50, SCREEN_HEIGHT - 50])
+        screen.blit(self.body1_text,     [SCREEN_WIDTH/4, SCREEN_HEIGHT/6 + 150])
+        screen.blit(self.body2_text,     [SCREEN_WIDTH/4, SCREEN_HEIGHT/6 + 200])
+        screen.blit(self.body3_text,     [SCREEN_WIDTH/4, SCREEN_HEIGHT/6 + 250])
+        screen.blit(self.credits_text,   [SCREEN_WIDTH/7, SCREEN_HEIGHT - 100])
+        screen.blit(self.copyright_text, [SCREEN_WIDTH/4, SCREEN_HEIGHT - 50])
 
     def switch(self, nextScene):
         self.next = nextScene
