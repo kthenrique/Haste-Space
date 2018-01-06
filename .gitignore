@@ -15,3 +15,6 @@ __pycache__
 
 # swp files
 *.swp
+
+# notes of general content
+*.notes
