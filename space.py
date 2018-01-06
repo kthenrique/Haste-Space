@@ -129,7 +129,7 @@ class Missile(pygame.sprite.Sprite):
 
 class Meteor(pygame.sprite.Sprite):
 
-    def __init__(self, offset, position=(1,1), velocity=(1,1)):
+    def __init__(self, offset, position, velocity=(1,1)):
         super().__init__()
         self.offset = offset
         self.position = position
@@ -145,9 +145,8 @@ class Meteor(pygame.sprite.Sprite):
         self.velocity = velocity
 
     def update(self):
-        self.position = self.velocity * d_time
-        self.rect.x = 10
-        self.rect.y = 10
+        self.rect.x = int(self.position[0])
+        self.rect.y = int(self.position[1])
 
 
 
@@ -356,9 +355,11 @@ class GameplayScene():
             # set random position
             x = random.randrange(SCREEN_WIDTH  - 100)
             y = random.randrange(SCREEN_HEIGHT - 300)
+            
+            new_position = (x, y)
 
             # new meteor
-            meteoroid = Meteor(i, (1,2), velocity )
+            meteoroid = Meteor(i, new_position, velocity)
             meteoroid.update()
 
             # update list of sprites
@@ -395,10 +396,8 @@ class GameplayScene():
                     ammo_sprites.add(missile)
                 elif direction == '2':
                     self.pause = not self.pause
-                    #self.switch(MenuScene())
             elif direction == '2':
                 self.pause = not self.pause
-                #self.switch(MenuScene())
             elif direction == '1':
                 self.switch(MenuScene())
 
@@ -431,12 +430,11 @@ class GameplayScene():
             if self.player.rect.y > SCREEN_HEIGHT - self.player.rect.size[1]:
                 self.player.rect.y = SCREEN_HEIGHT - self.player.rect.size[1]
 
-            self.collided = False
             # Collision recognition
             collision = pygame.sprite.spritecollide(self.player, meteor_sprites, False)
             if len(collision) != 0:
                 self.collided = True
-                # is_running = False
+
         else:
             pass
 
