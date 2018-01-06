@@ -24,7 +24,7 @@ try:
     elif _platform == "win32" or _platform == "win64":
         port = serial.Serial('COM1', 115200, timeout=0.0)
 except:
-    print("SORRY! NO SUTABLE PORT WAS FOUND!")
+    print("SORRY! NO SUITABLE PORT WAS FOUND!")
     sys.exit()
 
 # Initialise Pygame
@@ -78,6 +78,7 @@ for i in range(len(buttons_assets)):
 bg_gameplay = pygame.image.load("./assets/Backdrop/bg_23.jpg").convert()
 bg_menu = pygame.image.load("./assets/Backdrop/bg_1.jpg").convert()
 bg_version = pygame.image.load("./assets/Backdrop/bg_21.png").convert()
+bg_about = pygame.image.load("./assets/Backdrop/bg_22.png").convert()
 
 # For handling of sprites - groups
 draw_sprites = pygame.sprite.Group()        # sprites to draw
@@ -232,8 +233,7 @@ class MenuScene():
                    pass
                    # self.switch(RecordScene())
                 if self.active_button == 2:
-                   pass
-                   # self.switch(AboutScene())
+                   self.switch(AboutScene())
                 if self.active_button == 3:
                    self.switch(None)
             elif direction == 'D':
@@ -448,21 +448,52 @@ class RecordScene():
 
 
 class AboutScene():
-    """ Authorship and credits """
+    """ Authorship and credits and how to play"""
+
+#    how_font       = pygame.font.SysFont('purisa', 45, True, True)
+    credits_font   = pygame.font.SysFont('purisa', 15, True, True)
+    copyright_font = pygame.font.SysFont('arial', 15, True, True)
+    body_font      = pygame.font.SysFont('arial', 30, True, True)
+
+#    how_text       = how_font.render("How to Play: ", True, WHITE)
+    body1_text      = body_font.render("Button1: Shoot", True, ORANGE)
+    body2_text      = body_font.render("Button2: Pause", True, ORANGE)
+    body3_text      = body_font.render("Button1->2: Menu", True, ORANGE)
+    credits_text   = credits_font.render("Some images and sprites were found at https://opengameart.org/ ", True, WHITE)
+    copyright_text = copyright_font.render("\u00a9 2018 Junaid Kahn - Kelve Henrique - Sebastian Dichler", True, BLUE)
 
     def __init__(self):
         self.next = self
+        self.count_title = [-0.4, 0]
 
-    def imputHandler(self, event):
-        pass
+    def inputHandler(self, event):
+        for direction in str(inputs):
+            if direction == '2':
+                   self.switch(MenuScene())
 
     def update(self):
-        pass
+        # Handling animation of title
+        if self.count_title[0] >= (len(title_imgs) - 0.4):
+            pass
+        else:
+            self.count_title[0] += 0.4
 
-    def sceneRender(self):
-        pass
+        self.count_title[1] += 1
+        if self.count_title[1] == 300:
+            self.count_title = [-0.4, 0]
 
-    def switchScene(self, nextScene):
+
+    def render(self):
+        screen.blit(bg_about, [0, 0])
+        screen.blit(title_imgs[int(self.count_title[0])], [60, 60])
+#        screen.blit(self.how_text,       [SCREEN_WIDTH/3, SCREEN_HEIGHT/6 + 100])
+        screen.blit(self.body1_text,     [SCREEN_WIDTH/5, SCREEN_HEIGHT/6 + 150])
+        screen.blit(self.body2_text,     [SCREEN_WIDTH/5, SCREEN_HEIGHT/6 + 200])
+        screen.blit(self.body3_text,     [SCREEN_WIDTH/5, SCREEN_HEIGHT/6 + 250])
+        screen.blit(self.credits_text,   [SCREEN_WIDTH/5 - 10, SCREEN_HEIGHT - 100])
+        screen.blit(self.copyright_text, [SCREEN_WIDTH/4 - 50, SCREEN_HEIGHT - 50])
+
+    def switch(self, nextScene):
         self.next = nextScene
 
 
