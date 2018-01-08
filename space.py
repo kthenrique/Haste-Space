@@ -452,6 +452,10 @@ class GameplayScene():
 
 
     def switch(self, nextScene):
+        # Delete sprites for transition of scenes
+        for sprite in draw_sprites:
+            draw_sprites.remove(sprite)
+
         self.next = nextScene
 
 
