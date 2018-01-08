@@ -129,20 +129,14 @@ class Missile(pygame.sprite.Sprite):
 
 class Meteor(pygame.sprite.Sprite):
 
-    def __init__(self, offset, position, velocity=(1,1)):
+    def __init__(self, offset):
         super().__init__()
         self.offset = offset
-        self.position = position
-        self.velocity = velocity
 
-        self.image = pygame.image.load("./assets/Meteors/" + meteors_assets[offset]).convert()
+        self.image = meteor_imgs[offset]
         self.image.set_colorkey(BLACK)
 
         self.rect = self.image.get_rect()
-
-    def set_velocity(self, velocity):
-        velocity.y += 1
-        self.velocity = velocity
 
     def update(self):
         ctr = random.randint(0, 15)
@@ -357,20 +351,10 @@ class GameplayScene():
 
         # Creating meteors
         for i in range(10):
-            # set random velocity
-            velocity = 1
-
-            # set random position
-            x = random.randrange(SCREEN_WIDTH  - 100)
-            y = random.randrange(SCREEN_HEIGHT - 300)
-            
-            new_position = (x, y)
-
             # new meteor
-            meteoroid = Meteor(i, new_position, velocity)
-            meteoroid.rect.x = new_position[0]
-            meteoroid.rect.y = new_position[1] - 350
-            #meteoroid.update()
+            meteoroid = Meteor(random.randint(0, 10))
+            meteoroid.rect.x = random.randrange(SCREEN_WIDTH  - 100)
+            meteoroid.rect.y = random.randrange(SCREEN_HEIGHT - 300) - 350
 
             # update list of sprites
             draw_sprites.add(meteoroid)
@@ -446,6 +430,20 @@ class GameplayScene():
                 self.collided = True
 
             for meteors in meteor_sprites:
+                if meteors.rect.y > (meteors.rect.size[1] + SCREEN_HEIGHT):
+                    meteor_sprites.remove(meteors)
+                    draw_sprites.remove(meteors)
+
+                    # new meteor
+                    meteoroid = Meteor(random.randint(0, 10))
+                    meteoroid.rect.x = random.randrange(SCREEN_WIDTH  - 100)
+                    meteoroid.rect.y = random.randrange(SCREEN_HEIGHT - 300) - 350
+
+                    # update list of sprites
+                    draw_sprites.add(meteoroid)
+                    meteor_sprites.add(meteoroid)
+
+
                 meteors.rect.y += 1
 
             meteor_sprites.update()
