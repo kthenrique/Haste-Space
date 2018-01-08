@@ -468,6 +468,8 @@ class GameplayScene():
         # Delete sprites for transition of scenes
         for sprite in draw_sprites:
             draw_sprites.remove(sprite)
+        for sprite in meteor_sprites:
+            meteor_sprites.remove(sprite)
 
         self.next = nextScene
 
