@@ -51,6 +51,11 @@ shoot_sound = pygame.mixer.Sound("./assets/Audio/laser.ogg")
 target_sound = pygame.mixer.Sound("./assets/Audio/target.ogg")
 
 # Load graphics
+enemy_imgs = pygame.image.load("./assets/Enemy/0.png").convert()
+bullet_img = pygame.image.load("./assets/Enemy/1.png").convert()
+
+missile_img = pygame.image.load("./assets/missile.png").convert()
+
 meteors_assets = os.listdir("./assets/Meteors")
 meteor_imgs = []
 for i in range(len(meteors_assets)):
@@ -98,9 +103,11 @@ bg_about = pygame.image.load("./assets/Backdrop/bg_5.png").convert()
 bg_record = pygame.image.load("./assets/Backdrop/bg_4.png").convert()
 
 # For handling of sprites - groups
-draw_sprites = pygame.sprite.Group()        # sprites to draw
+draw_sprites   = pygame.sprite.Group()      # sprites to draw
 meteor_sprites = pygame.sprite.Group()      # sprites of meteors
-ammo_sprites = pygame.sprite.Group()        # sprites of missiles
+ammo_sprites   = pygame.sprite.Group()      # sprites of missiles
+enemy_sprites  = pygame.sprite.Group()      # sprites of shooting enemies
+bullet_sprites  = pygame.sprite.Group()     # sprites of bullets from enemies
 
 
 # Classes
@@ -118,7 +125,7 @@ class Missile(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
 
-        self.image = pygame.image.load("./assets/missile.png").convert()
+        self.image = missile_img
         self.image.set_colorkey(BLACK)
 
         self.rect = self.image.get_rect()
@@ -149,6 +156,37 @@ class Meteor(pygame.sprite.Sprite):
         elif ctr in (9, 10, 11):
             self.rect.y -= 2
 
+
+class Enemy(pygame.sprite.Sprite):
+
+    def __init__(self):
+        super().__init__()
+        self.t = 0
+
+        self.image = enemy_imgs
+        self.image.set_colorkey(BLACK)
+
+        self.rect = self.image.get_rect()
+
+    def update(self):
+        self.t += 0.1
+        self.rect.y = SCREEN_HEIGHT/6 + 100*math.sin(self.t)
+        self.rect.x = SCREEN_WIDTH/2 + 100*math.cos(self.t)
+        if self.t == 2*math.pi:
+            self.t = 0
+
+
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+
+        self.image = bullet_img
+        self.image.set_colorkey(BLACK)
+
+        self.rect = self.image.get_rect()
+
+    def update(self):
+        self.rect.y += 10
 
 
 # Declaring the various scenes of the game:
@@ -343,6 +381,8 @@ class GameplayScene():
         self.next = self
         self.pause = False
         self.collided = False
+        self.t = 0
+
         # Instatiating actors
         self.player = Ship()
         self.player.rect.x = SCREEN_WIDTH/2 - 80
@@ -359,6 +399,14 @@ class GameplayScene():
             # update list of sprites
             draw_sprites.add(meteoroid)
             meteor_sprites.add(meteoroid)
+
+        # Creates enemies
+        self.enemy = Enemy()
+
+        # update list of sprites
+        draw_sprites.add(self.enemy)
+        enemy_sprites.add(self.enemy)
+
 
 
     def inputHandler(self, inputs):#, self.player, draw_sprites, ammo_sprites):
@@ -447,6 +495,18 @@ class GameplayScene():
                 meteors.rect.y += 1
 
             meteor_sprites.update()
+            enemy_sprites.update()
+
+            self.t += 1
+            if self.t == 50:
+                bullet = Bullet()
+                bullet.rect.x = self.enemy.rect.x + self.enemy.rect.size[0]/2
+                bullet.rect.y = self.enemy.rect.y
+                draw_sprites.add(bullet)
+                bullet_sprites.add(bullet)
+                self.t = 0
+
+            bullet_sprites.update()
 
         else:
             pass
