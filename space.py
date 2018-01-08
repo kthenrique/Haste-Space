@@ -145,8 +145,15 @@ class Meteor(pygame.sprite.Sprite):
         self.velocity = velocity
 
     def update(self):
-        self.rect.x = int(self.position[0])
-        self.rect.y = int(self.position[1])
+        ctr = random.randint(0, 15)
+        if ctr in (0, 1, 2):
+            self.rect.x += 1
+        elif ctr in (3, 4, 5):
+            self.rect.y += 2
+        elif ctr in (6, 7, 8):
+            self.rect.x -= 1
+        elif ctr in (9, 10, 11):
+            self.rect.y -= 2
 
 
 
@@ -348,6 +355,7 @@ class GameplayScene():
         self.player.rect.y = SCREEN_HEIGHT-120
         draw_sprites.add(self.player)
 
+        # Creating meteors
         for i in range(10):
             # set random velocity
             velocity = 1
@@ -360,7 +368,9 @@ class GameplayScene():
 
             # new meteor
             meteoroid = Meteor(i, new_position, velocity)
-            meteoroid.update()
+            meteoroid.rect.x = new_position[0]
+            meteoroid.rect.y = new_position[1] - 350
+            #meteoroid.update()
 
             # update list of sprites
             draw_sprites.add(meteoroid)
@@ -434,6 +444,11 @@ class GameplayScene():
             collision = pygame.sprite.spritecollide(self.player, meteor_sprites, False)
             if len(collision) != 0:
                 self.collided = True
+
+            for meteors in meteor_sprites:
+                meteors.rect.y += 1
+
+            meteor_sprites.update()
 
         else:
             pass
