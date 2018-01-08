@@ -53,6 +53,7 @@ target_sound = pygame.mixer.Sound("./assets/Audio/target.ogg")
 # Load graphics
 enemy_imgs = pygame.image.load("./assets/Enemy/0.png").convert()
 bullet_img = pygame.image.load("./assets/Enemy/1.png").convert()
+star_img   = pygame.image.load("./assets/star.png").convert()
 
 missile_img = pygame.image.load("./assets/missile.png").convert()
 
@@ -107,7 +108,8 @@ draw_sprites   = pygame.sprite.Group()      # sprites to draw
 meteor_sprites = pygame.sprite.Group()      # sprites of meteors
 ammo_sprites   = pygame.sprite.Group()      # sprites of missiles
 enemy_sprites  = pygame.sprite.Group()      # sprites of shooting enemies
-bullet_sprites  = pygame.sprite.Group()     # sprites of bullets from enemies
+bullet_sprites = pygame.sprite.Group()      # sprites of bullets from enemies
+star_sprite    = pygame.sprite.Group()      # sprites of the star
 
 
 # Classes
@@ -169,7 +171,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def update(self):
-        self.t += 0.1
+        self.t += 0.05
         self.rect.y = SCREEN_HEIGHT/6 + 100*math.sin(self.t)
         self.rect.x = SCREEN_WIDTH/2 + 100*math.cos(self.t)
         if self.t == 2*math.pi:
@@ -177,6 +179,7 @@ class Enemy(pygame.sprite.Sprite):
 
 
 class Bullet(pygame.sprite.Sprite):
+
     def __init__(self):
         super().__init__()
 
@@ -187,6 +190,21 @@ class Bullet(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.y += 10
+
+
+class Star(pygame.sprite.Sprite):
+
+    def __init__(self):
+        super().__init__()
+
+        self.image = star_img
+        self.image.set_colorkey(BLACK)
+
+        self.rect = self.image.get_rect()
+
+    def update(self):
+        self.rect.y = SCREEN_HEIGHT/6 
+        self.rect.x = SCREEN_WIDTH/2 
 
 
 # Declaring the various scenes of the game:
@@ -372,6 +390,8 @@ class GameplayScene():
     score_text = score_font.render("Score: " + str(score), True, WHITE)
     gameover_font = pygame.font.SysFont('symbola', 55, True, True)
     gameover_text = gameover_font.render("Game Over", True, WHITE)
+    winning_font = pygame.font.SysFont('symbola', 55, True, True)
+    winning_text = winning_font.render("YOU WON", True, WHITE)
 
     # gameover_text_rect = gameover_text.get_rect()
     gameover_text_x = screen.get_width() / 2 - 100 # gameover_text_rect.width / 2
@@ -381,7 +401,9 @@ class GameplayScene():
         self.next = self
         self.pause = False
         self.collided = False
+        self.won = False
         self.t = 0
+        self.no_enemy = False
 
         # Instatiating actors
         self.player = Ship()
@@ -401,11 +423,16 @@ class GameplayScene():
             meteor_sprites.add(meteoroid)
 
         # Creates enemies
-        self.enemy = Enemy()
-
         # update list of sprites
+        self.enemy = Enemy()
         draw_sprites.add(self.enemy)
         enemy_sprites.add(self.enemy)
+
+        # Creates star
+        self.star = Star()
+        draw_sprites.add(self.star)
+        star_sprite.add(self.star)
+        star_sprite.update()
 
 
 
@@ -456,6 +483,14 @@ class GameplayScene():
                     draw_sprites.remove(missile)
                     self.score += 1
 
+                destroyed_enemy = pygame.sprite.spritecollide(missile, enemy_sprites, True)
+                for enemy in destroyed_enemy:
+                    # target_sound.play()
+                    ammo_sprites.remove(missile)
+                    draw_sprites.remove(missile)
+                    self.score += 10
+                    self.no_enemy = True
+                    
                 if missile.rect.y < (-1 * missile.rect.size[1]):
                     ammo_sprites.remove(missile)
                     draw_sprites.remove(missile)
@@ -472,10 +507,15 @@ class GameplayScene():
             if self.player.rect.y > SCREEN_HEIGHT - self.player.rect.size[1]:
                 self.player.rect.y = SCREEN_HEIGHT - self.player.rect.size[1]
 
-            # Collision recognition
+            # Collision player-meteor recognition
             collision = pygame.sprite.spritecollide(self.player, meteor_sprites, False)
-            if len(collision) != 0:
+            if len(collision) != 0 and self.won != True:
                 self.collided = True
+
+            # Collision player-star recognition
+            collision = pygame.sprite.spritecollide(self.player, star_sprite, False)
+            if len(collision) != 0 and self.collided != True:
+                self.won = True
 
             for meteors in meteor_sprites:
                 if meteors.rect.y > (meteors.rect.size[1] + SCREEN_HEIGHT):
@@ -494,19 +534,28 @@ class GameplayScene():
 
                 meteors.rect.y += 1
 
+            for bullet in bullet_sprites:
+                collision = pygame.sprite.spritecollide(self.player, bullet_sprites, False)
+                if len(collision) != 0 and self.won != True:
+                    self.collided = True
+
+                if bullet.rect.y > (bullet.rect.size[1] + SCREEN_HEIGHT):
+                    bullet_sprites.remove(bullet)
+                    draw_sprites.remove(bullet)
+
+            if self.no_enemy is False:
+                self.t += 1
+                if self.t == 50:
+                    bullet = Bullet()
+                    bullet.rect.x = self.enemy.rect.x + self.enemy.rect.size[0]/2
+                    bullet.rect.y = self.enemy.rect.y
+                    draw_sprites.add(bullet)
+                    bullet_sprites.add(bullet)
+                    self.t = 0
+             
+            bullet_sprites.update()
             meteor_sprites.update()
             enemy_sprites.update()
-
-            self.t += 1
-            if self.t == 50:
-                bullet = Bullet()
-                bullet.rect.x = self.enemy.rect.x + self.enemy.rect.size[0]/2
-                bullet.rect.y = self.enemy.rect.y
-                draw_sprites.add(bullet)
-                bullet_sprites.add(bullet)
-                self.t = 0
-
-            bullet_sprites.update()
 
         else:
             pass
@@ -515,13 +564,17 @@ class GameplayScene():
         # Main Scene
         screen.blit(bg_gameplay, [0, 0])
 
+        if self.won and not self.collided:
+            screen.blit(self.winning_text, [self.gameover_text_x, self.gameover_text_y])
+
         draw_sprites.draw(screen)
-        if self.collided:
-            screen.blit(self.gameover_text, [self.gameover_text_x, self.gameover_text_y])
+
         score_text = self.score_font.render("Score: " + str(self.score), True, WHITE)
         screen.blit(score_text, [10, 10])
-        if self.collided:
+
+        if self.collided and not self.won:
             screen.blit(self.gameover_text, [self.gameover_text_x, self.gameover_text_y])
+
 
 
     def switch(self, nextScene):
@@ -529,6 +582,12 @@ class GameplayScene():
         for sprite in draw_sprites:
             draw_sprites.remove(sprite)
         for sprite in meteor_sprites:
+            meteor_sprites.remove(sprite)
+        for sprite in enemy_sprites:
+            meteor_sprites.remove(sprite)
+        for sprite in star_sprite:
+            meteor_sprites.remove(sprite)
+        for sprite in bullet_sprites:
             meteor_sprites.remove(sprite)
 
         self.next = nextScene
