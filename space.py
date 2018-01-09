@@ -49,6 +49,8 @@ d_time = 0.0
 # Load sounds
 shoot_sound = pygame.mixer.Sound("./assets/Audio/laser.ogg")
 target_sound = pygame.mixer.Sound("./assets/Audio/target.ogg")
+gameover_sound = pygame.mixer.Sound("./assets/Audio/gameover.ogg")
+won_sound = pygame.mixer.Sound("./assets/Audio/won.ogg")
 
 # Load graphics
 enemy_imgs = pygame.image.load("./assets/Enemy/0.png").convert()
@@ -425,6 +427,7 @@ class GameplayScene():
         self.won = False
         self.t = 0
         self.no_enemy = False
+        self.sound_play = False
 
         # Instatiating actors
         self.player = Ship()
@@ -499,7 +502,7 @@ class GameplayScene():
             for missile in ammo_sprites:
                 destroyed_meteor = pygame.sprite.spritecollide(missile, meteor_sprites, True)
                 for meteor in destroyed_meteor:
-                    # target_sound.play()
+                    target_sound.play()
                     ammo_sprites.remove(missile)
                     draw_sprites.remove(missile)
                     self.score += 1
@@ -586,6 +589,9 @@ class GameplayScene():
         screen.blit(bg_gameplay, [0, 0])
 
         if self.won and not self.collided:
+            if not self.sound_play:
+                won_sound.play()
+                self.sound_play = True
             screen.blit(self.winning_text, [self.gameover_text_x, self.gameover_text_y])
 
         draw_sprites.draw(screen)
@@ -594,6 +600,9 @@ class GameplayScene():
         screen.blit(score_text, [10, 10])
 
         if self.collided and not self.won:
+            if not self.sound_play:
+                gameover_sound.play()
+                self.sound_play = True
             screen.blit(self.gameover_text, [self.gameover_text_x, self.gameover_text_y])
 
 
@@ -616,7 +625,9 @@ class GameplayScene():
         self.won = False
         self.t = 0
         self.no_enemy = False
+        self.sound_play = False
         self.next = nextScene
+
 
 
 class RecordScene():
