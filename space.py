@@ -57,12 +57,16 @@ star_img   = pygame.image.load("./assets/star.png").convert()
 
 missile_img = pygame.image.load("./assets/missile.png").convert()
 
-meteors_assets = os.listdir("./assets/Meteors")
-meteor_imgs = []
-for i in range(len(meteors_assets)):
-    new_meteor = pygame.image.load("./assets/Meteors/" + meteors_assets[i]).convert()
-    new_meteor.set_colorkey(BLACK)
-    meteor_imgs.append(new_meteor)
+meteor_lists = []
+for j in range(0,7):
+    new_list = []
+    meteors_assets = os.listdir("./assets/Meteors/"+str(j))
+    for i in range(len(meteors_assets)):
+        new_meteor = pygame.image.load("./assets/Meteors/" + str(j) + "/" + meteors_assets[i]).convert()
+        new_meteor.set_colorkey(BLACK)
+        new_list.append(new_meteor)
+    meteor_lists.append(new_list)
+
 
 title_assets = os.listdir("./assets/Title")
 title_assets = sorted(title_assets, key=lambda x: (int(re.sub('\D','',x)),x))
@@ -114,6 +118,8 @@ star_sprite    = pygame.sprite.Group()      # sprites of the star
 
 # Classes
 class Ship(pygame.sprite.Sprite):
+    """ Player sprite """
+
     def __init__(self):
         super().__init__()
 
@@ -124,6 +130,8 @@ class Ship(pygame.sprite.Sprite):
 
 
 class Missile(pygame.sprite.Sprite):
+    """ Player bullets sprite """
+
     def __init__(self):
         super().__init__()
 
@@ -137,12 +145,16 @@ class Missile(pygame.sprite.Sprite):
 
 
 class Meteor(pygame.sprite.Sprite):
+    """ Meteors sprite """
 
     def __init__(self, offset):
         super().__init__()
         self.offset = offset
+        self.count_ship = 0
+        self.anim = 0
 
-        self.image = meteor_imgs[offset]
+        self.sprites = meteor_lists[offset]
+        self.image = self.sprites[0]
         self.image.set_colorkey(BLACK)
 
         self.rect = self.image.get_rect()
@@ -158,8 +170,15 @@ class Meteor(pygame.sprite.Sprite):
         elif ctr in (9, 10, 11):
             self.rect.y -= 2
 
+        # Handle animation
+        if self.anim > 15:
+            self.anim = 0
+        self.image = self.sprites[int(self.anim)]
+        self.anim += 0.08
+
 
 class Enemy(pygame.sprite.Sprite):
+    """ The ship of enemy """
 
     def __init__(self):
         super().__init__()
@@ -179,6 +198,7 @@ class Enemy(pygame.sprite.Sprite):
 
 
 class Bullet(pygame.sprite.Sprite):
+    """ The bullets of enemy """
 
     def __init__(self):
         super().__init__()
@@ -193,6 +213,7 @@ class Bullet(pygame.sprite.Sprite):
 
 
 class Star(pygame.sprite.Sprite):
+    """ The flag to be captured as goal of game """
 
     def __init__(self):
         super().__init__()
@@ -414,7 +435,7 @@ class GameplayScene():
         # Creating meteors
         for i in range(10):
             # new meteor
-            meteoroid = Meteor(random.randint(0, 10))
+            meteoroid = Meteor(random.randint(0, 6))
             meteoroid.rect.x = random.randrange(SCREEN_WIDTH  - 100)
             meteoroid.rect.y = random.randrange(SCREEN_HEIGHT - 300) - 350
 
@@ -523,7 +544,7 @@ class GameplayScene():
                     draw_sprites.remove(meteors)
 
                     # new meteor
-                    meteoroid = Meteor(random.randint(0, 10))
+                    meteoroid = Meteor(random.randint(0, 6))
                     meteoroid.rect.x = random.randrange(SCREEN_WIDTH  - 100)
                     meteoroid.rect.y = random.randrange(SCREEN_HEIGHT - 300) - 350
 
@@ -590,6 +611,11 @@ class GameplayScene():
         for sprite in bullet_sprites:
             meteor_sprites.remove(sprite)
 
+        self.pause = False
+        self.collided = False
+        self.won = False
+        self.t = 0
+        self.no_enemy = False
         self.next = nextScene
 
 
