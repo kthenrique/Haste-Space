@@ -515,14 +515,16 @@ class GameplayScene():
                     target_sound.play()
                     ammo_sprites.remove(missile)
                     draw_sprites.remove(missile)
-                    self.extra += 1
+                    if not self.won and not self.collided:
+                        self.extra += 1
 
                 destroyed_enemy = pygame.sprite.spritecollide(missile, enemy_sprites, True)
                 for enemy in destroyed_enemy:
                     # target_sound.play()
                     ammo_sprites.remove(missile)
                     draw_sprites.remove(missile)
-                    self.extra += 2
+                    if not self.won and not self.collided:
+                        self.extra += 2
                     self.numb_enemy -= 1
                     if self.numb_enemy == 0:
                         self.no_enemy = True
