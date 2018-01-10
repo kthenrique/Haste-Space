@@ -46,11 +46,15 @@ pygame.display.set_caption('HASTE SPACE')
 initial_velocity = 1
 d_time = 0.0
 
-# Load sounds
+# Load sounds and reduce volume of shooting
 shoot_sound = pygame.mixer.Sound("./assets/Audio/laser.ogg")
 target_sound = pygame.mixer.Sound("./assets/Audio/target.ogg")
 gameover_sound = pygame.mixer.Sound("./assets/Audio/gameover.ogg")
 won_sound = pygame.mixer.Sound("./assets/Audio/won.ogg")
+
+shoot_sound.set_volume(0.1)
+target_sound.set_volume(0.2)
+won_sound.set_volume(0.7)
 
 # Load graphics
 enemy_imgs = pygame.image.load("./assets/Enemy/0.png").convert()
