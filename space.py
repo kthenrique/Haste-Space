@@ -408,10 +408,11 @@ class GameplayScene():
 
     # SCORE
     score = 000
+    extra = 0
 
     # Define stamps
     score_font = pygame.font.SysFont('purisa', 25, True, True)
-    score_text = score_font.render("Score: " + str(score), True, WHITE)
+    score_text = score_font.render("Time: " + "%.2f" % (score) + " +" + str(extra), True, WHITE)
     gameover_font = pygame.font.SysFont('symbola', 55, True, True)
     gameover_text = gameover_font.render("Game Over", True, WHITE)
     winning_font = pygame.font.SysFont('symbola', 55, True, True)
@@ -432,6 +433,7 @@ class GameplayScene():
         self.numb_enemy = 4
         self.sound_play = False
         self.bullet = []
+        self.initial_time = pygame.time.get_ticks()
 
         # Instatiating actors
         self.player = Ship()
@@ -502,7 +504,10 @@ class GameplayScene():
 
     def update(self):#, meteor_sprites, ammo_sprites, draw_sprites):
         if self.pause is False:
-            self.score = (pygame.time.get_ticks() - initial_time)/1000
+            # Handle score
+            if not self.won and not self.collided:
+                self.score = (pygame.time.get_ticks() - self.initial_time)/1000
+
             # Target down recognition
             for missile in ammo_sprites:
                 destroyed_meteor = pygame.sprite.spritecollide(missile, meteor_sprites, True)
@@ -510,14 +515,14 @@ class GameplayScene():
                     target_sound.play()
                     ammo_sprites.remove(missile)
                     draw_sprites.remove(missile)
-                    self.score += 1
+                    self.extra += 1
 
                 destroyed_enemy = pygame.sprite.spritecollide(missile, enemy_sprites, True)
                 for enemy in destroyed_enemy:
                     # target_sound.play()
                     ammo_sprites.remove(missile)
                     draw_sprites.remove(missile)
-                    self.score += 2
+                    self.extra += 2
                     self.numb_enemy -= 1
                     if self.numb_enemy == 0:
                         self.no_enemy = True
@@ -597,7 +602,6 @@ class GameplayScene():
                         draw_sprites.add(bullet)
                         bullet_sprites.add(bullet)
              
-            print(len(bullet_sprites))
             bullet_sprites.update()
             meteor_sprites.update()
             enemy_sprites.update()
@@ -617,7 +621,7 @@ class GameplayScene():
 
         draw_sprites.draw(screen)
 
-        score_text = self.score_font.render("Score: " + str(self.score), True, WHITE)
+        score_text = self.score_font.render("Time: " + "%.2f" % (self.score) + " +" + str(self.extra), True, WHITE)
         screen.blit(score_text, [10, 10])
 
         if self.collided and not self.won:
@@ -740,7 +744,6 @@ active_scene = VersionScene()       # state of game
 
 dir_tick = 0.0
 
-initial_time = pygame.time.get_ticks()
 while active_scene != None:
     # Limit the framerate
     d_time_ms = clock.tick(fps)
