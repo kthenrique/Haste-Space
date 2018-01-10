@@ -1,5 +1,7 @@
 # BEL3: ESS Project - Haste-Space
 
+### Motivation
+
 ### Requested Devices
 XMC4500 - Infineon  
 LIS3DH - 3-axis acceleration sensor  
@@ -16,3 +18,7 @@ $ tar xjf gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2
 $ echo 'export PATH=$HOME/Bin/gcc-arm-none-eabi-5_4-2016q3/bin:$PATH' >> $HOME/.bashrc  
 $ rm -rf gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2  
 ```
+
+### How to Play
+
+

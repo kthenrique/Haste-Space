@@ -429,7 +429,9 @@ class GameplayScene():
         self.t = 0
         self.counter = 0
         self.no_enemy = False
+        self.numb_enemy = 4
         self.sound_play = False
+        self.bullet = []
 
         # Instatiating actors
         self.player = Ship()
@@ -516,7 +518,9 @@ class GameplayScene():
                     ammo_sprites.remove(missile)
                     draw_sprites.remove(missile)
                     self.score += 2
-                    self.no_enemy = True
+                    self.numb_enemy -= 1
+                    if self.numb_enemy == 0:
+                        self.no_enemy = True
                     
                 if missile.rect.y < (-1 * missile.rect.size[1]):
                     ammo_sprites.remove(missile)
@@ -582,15 +586,18 @@ class GameplayScene():
             if self.counter > 50:
                 self.counter = 0
                 if self.no_enemy is False:
-                    self.t += 1
+                    self.t += 1 
                     if self.t > 3:
                         self.t = 0
-                    bullet = Bullet()
-                    bullet.rect.x = self.enemy[self.t].rect.x + self.enemy[self.t].rect.size[0]/2
-                    bullet.rect.y = self.enemy[self.t].rect.y
-                    draw_sprites.add(bullet)
-                    bullet_sprites.add(bullet)
+                    if self.enemy[self.t] in enemy_sprites:
+                        bullet = Bullet()
+                        self.bullet.append(bullet)
+                        bullet.rect.x = self.enemy[self.t].rect.x + self.enemy[self.t].rect.size[0]/2
+                        bullet.rect.y = self.enemy[self.t].rect.y
+                        draw_sprites.add(bullet)
+                        bullet_sprites.add(bullet)
              
+            print(len(bullet_sprites))
             bullet_sprites.update()
             meteor_sprites.update()
             enemy_sprites.update()
@@ -619,8 +626,6 @@ class GameplayScene():
                 self.sound_play = True
             screen.blit(self.gameover_text, [self.gameover_text_x, self.gameover_text_y])
 
-
-
     def switch(self, nextScene):
         # Delete all sprites for transition of scenes
         for sprite in draw_sprites:
@@ -638,6 +643,7 @@ class GameplayScene():
         for sprite in bullet_sprites:
             bullet_sprites.remove(sprite)
             sprite = None
+            
 
         self.next = nextScene
 
