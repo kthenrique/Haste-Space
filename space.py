@@ -116,6 +116,41 @@ enemy_sprites  = pygame.sprite.Group()      # sprites of shooting enemies
 bullet_sprites = pygame.sprite.Group()      # sprites of bullets from enemies
 star_sprite    = pygame.sprite.Group()      # sprites of the star
 
+# Record text
+try:
+    record_file = open(".rec", "r")
+except FileNotFoundError:
+    print("Non Existing Record File")
+    RECORD = 0
+else:
+    RECORD = float(record_file.readline()[0:-1])
+    record_file.close()
+
+record_font = pygame.font.SysFont('arial', 30, True, True)
+if RECORD == 0:
+    record_text = record_font.render("NOT PLAYED YET", True, ORANGE)
+else:
+    record_text = record_font.render("%.2f"%(RECORD), True, ORANGE)
+
+# Assisting functions
+# Handle Record file
+def save_record(NEW_RECORD):
+    """ It takes the newest record data saving to respective file """
+   
+    global record_text
+    global RECORD
+    if NEW_RECORD < RECORD or RECORD == 0:
+        RECORD = NEW_RECORD
+        record_text = record_font.render("%.2f"%(RECORD), True, ORANGE)
+        try:
+            record_file = open(".rec","w")
+        except:
+            print("ERROR: OPENING RECORD FILE")
+        else:
+            record_file.write("%.2f"%(RECORD))
+            record_file.close()
+        
+
 
 # Classes
 class Ship(pygame.sprite.Sprite):
@@ -616,6 +651,7 @@ class GameplayScene():
         screen.blit(bg_gameplay, [0, 0])
 
         if self.won and not self.collided:
+            save_record(self.score + self.extra)
             if not self.sound_play:
                 won_sound.play()
                 self.sound_play = True
@@ -680,6 +716,7 @@ class RecordScene():
     def render(self):
         screen.blit(bg_record, [0, 0])
         screen.blit(record_imgs[int(self.count_record[0])], [SCREEN_WIDTH/5, 60])
+        screen.blit(record_text, [3*SCREEN_WIDTH/7, 4*SCREEN_HEIGHT/7])
 
     def switch(self, nextScene):
         self.next = nextScene
@@ -688,12 +725,10 @@ class RecordScene():
 class AboutScene():
     """ Authorship and credits and how to play"""
 
-#    how_font       = pygame.font.SysFont('purisa', 45, True, True)
     credits_font   = pygame.font.SysFont('purisa', 15, True, True)
     copyright_font = pygame.font.SysFont('arial', 15, True, True)
     body_font      = pygame.font.SysFont('arial', 30, True, True)
 
-#    how_text       = how_font.render("How to Play: ", True, WHITE)
     body1_text      = body_font.render("Button1: Shoot", True, ORANGE)
     body2_text      = body_font.render("Button2: Pause", True, ORANGE)
     body3_text      = body_font.render("Button1->2: Menu", True, ORANGE)
@@ -723,8 +758,6 @@ class AboutScene():
     def render(self):
         screen.blit(bg_about, [0, 0])
         screen.blit(about_imgs[int(self.count_about[0])], [SCREEN_WIDTH/4, 60])
-#        screen.blit(title_imgs[int(self.count_title[0])], [60, 60])
-#        screen.blit(self.how_text,       [SCREEN_WIDTH/3, SCREEN_HEIGHT/6 + 100])
         screen.blit(self.body1_text,     [SCREEN_WIDTH/4, SCREEN_HEIGHT/6 + 150])
         screen.blit(self.body2_text,     [SCREEN_WIDTH/4, SCREEN_HEIGHT/6 + 200])
         screen.blit(self.body3_text,     [SCREEN_WIDTH/4, SCREEN_HEIGHT/6 + 250])
