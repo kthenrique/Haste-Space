@@ -34,6 +34,9 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 ORANGE= (233, 166, 31)
 BLUE  = (95, 198, 207)
+BLUE1 = (0, 15, 110)
+YELLOW =(218, 224, 25)
+YELLOW1=(228, 235, 26)
 
 # Define screen size and set it
 SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
@@ -109,8 +112,8 @@ for i in range(len(buttons_assets)):
 bg_gameplay = pygame.image.load("./assets/Backdrop/bg_23.jpg").convert()
 bg_menu = pygame.image.load("./assets/Backdrop/bg_1.jpg").convert()
 bg_version = pygame.image.load("./assets/Backdrop/bg_21.png").convert()
-bg_about = pygame.image.load("./assets/Backdrop/bg_5.png").convert()
-bg_record = pygame.image.load("./assets/Backdrop/bg_4.png").convert()
+bg_about = pygame.image.load("./assets/Backdrop/bg_20.png").convert()
+bg_record = pygame.image.load("./assets/Backdrop/bg_6.png").convert()
 
 # For handling of sprites - groups
 draw_sprites   = pygame.sprite.Group()      # sprites to draw
@@ -130,11 +133,12 @@ else:
     RECORD = float(record_file.readline()[0:-1])
     record_file.close()
 
-record_font = pygame.font.SysFont('arial', 30, True, True)
+# Kimberly Geswein free font found at www.1001fonts.com/textured-fonts
+record_font = pygame.font.Font('./assets/Fonts/Chunk.ttf', 130)
 if RECORD == 0:
-    record_text = record_font.render("NOT PLAYED YET", True, ORANGE)
+    record_text = record_font.render("NOT PLAYED YET", True, YELLOW1)
 else:
-    record_text = record_font.render("%.2f"%(RECORD), True, ORANGE)
+    record_text = record_font.render("%.2f"%(RECORD) + " s", True, YELLOW1)
 
 # Assisting functions
 # Handle Record file
@@ -145,7 +149,7 @@ def save_record(NEW_RECORD):
     global RECORD
     if NEW_RECORD < RECORD or RECORD == 0:
         RECORD = NEW_RECORD
-        record_text = record_font.render("%.2f"%(RECORD), True, ORANGE)
+        record_text = record_font.render("%.2f"%(RECORD) + " s", True, YELLOW1)
         try:
             record_file = open(".rec","w")
         except:
@@ -720,7 +724,7 @@ class RecordScene():
     def render(self):
         screen.blit(bg_record, [0, 0])
         screen.blit(record_imgs[int(self.count_record[0])], [SCREEN_WIDTH/5, 60])
-        screen.blit(record_text, [3*SCREEN_WIDTH/7, 4*SCREEN_HEIGHT/7])
+        screen.blit(record_text, [6*SCREEN_WIDTH/20, 4*SCREEN_HEIGHT/7])
 
     def switch(self, nextScene):
         self.next = nextScene
@@ -729,13 +733,15 @@ class RecordScene():
 class AboutScene():
     """ Authorship and credits and how to play"""
 
-    credits_font   = pygame.font.SysFont('purisa', 15, True, True)
-    copyright_font = pygame.font.SysFont('arial', 15, True, True)
-    body_font      = pygame.font.SysFont('arial', 30, True, True)
+    credits_font   = pygame.font.SysFont('purisa', 10, True, True)
+    copyright_font = pygame.font.SysFont('Serif', 15, True, True)
+    body_font      = pygame.font.SysFont('Serif', 20, True, True)
+    body0_font     = pygame.font.SysFont('Serif', 25, True, True)
 
-    body1_text      = body_font.render("Button1: Shoot", True, ORANGE)
-    body2_text      = body_font.render("Button2: Pause", True, ORANGE)
-    body3_text      = body_font.render("Button1->2: Menu", True, ORANGE)
+    body0_text     = body0_font.render("Capture the star as fast as you can", True, YELLOW1)
+    body1_text     = body_font.render("Button1: Shoot", True, YELLOW)
+    body2_text     = body_font.render("Button2: Pause | Transition between menus", True, YELLOW)
+    body3_text     = body_font.render("Button2->1: End the game going to Menu", True, YELLOW)
     credits_text   = credits_font.render("Some images and sprites were found at https://opengameart.org/ ", True, WHITE)
     copyright_text = copyright_font.render("\u00a9 2018 Junaid Kahn - Kelve Henrique - Sebastian Dichler", True, BLUE)
 
@@ -762,11 +768,14 @@ class AboutScene():
     def render(self):
         screen.blit(bg_about, [0, 0])
         screen.blit(about_imgs[int(self.count_about[0])], [SCREEN_WIDTH/4, 60])
-        screen.blit(self.body1_text,     [SCREEN_WIDTH/4, SCREEN_HEIGHT/6 + 150])
-        screen.blit(self.body2_text,     [SCREEN_WIDTH/4, SCREEN_HEIGHT/6 + 200])
-        screen.blit(self.body3_text,     [SCREEN_WIDTH/4, SCREEN_HEIGHT/6 + 250])
-        screen.blit(self.credits_text,   [SCREEN_WIDTH/7, SCREEN_HEIGHT - 100])
-        screen.blit(self.copyright_text, [SCREEN_WIDTH/4, SCREEN_HEIGHT - 50])
+
+        screen.blit(self.body0_text,     [SCREEN_WIDTH/4, 4*SCREEN_HEIGHT/9])
+        screen.blit(self.body1_text,     [SCREEN_WIDTH/4, 11*SCREEN_HEIGHT/20])
+        screen.blit(self.body2_text,     [SCREEN_WIDTH/4, 12*SCREEN_HEIGHT/20])
+        screen.blit(self.body3_text,     [SCREEN_WIDTH/4, 13*SCREEN_HEIGHT/20])
+
+        screen.blit(self.credits_text,   [6*SCREEN_WIDTH/25, 23*SCREEN_HEIGHT/25])
+        screen.blit(self.copyright_text, [4*SCREEN_WIDTH/15, 24*SCREEN_HEIGHT/25])
 
     def switch(self, nextScene):
         self.next = nextScene
