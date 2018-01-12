@@ -150,7 +150,7 @@ record_font = pygame.font.Font('./assets/Fonts/Chunk.ttf', 130)
 if RECORD == 0:
     record_text = record_font.render("NO DATA", True, YELLOW1)
 else:
-    record_text = record_font.render("%.2f"%(RECORD) + " s", True, YELLOW1)
+    record_text = record_font.render("%.2f"%(RECORD) + "s", True, YELLOW1)
 
 # Assisting functions
 # Handle Record file
@@ -161,7 +161,7 @@ def save_record(NEW_RECORD):
     global RECORD
     if NEW_RECORD < RECORD or RECORD == 0:
         RECORD = NEW_RECORD
-        record_text = record_font.render("%.2f"%(RECORD) + " s", True, YELLOW1)
+        record_text = record_font.render("%.2f"%(RECORD) + "s", True, YELLOW1)
         try:
             record_file = open(".rec","w")
         except:
@@ -752,7 +752,7 @@ class RecordScene():
     def render(self):
         screen.blit(bg_record, [0, 0])
         screen.blit(record_imgs[int(self.count_record[0])], [SCREEN_WIDTH/5, 60])
-        screen.blit(record_text, [6*SCREEN_WIDTH/20, 4*SCREEN_HEIGHT/7])
+        screen.blit(record_text, [7*SCREEN_WIDTH/20, SCREEN_HEIGHT/2])
 
     def switch(self, nextScene):
         self.next = nextScene
