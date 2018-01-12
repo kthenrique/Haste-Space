@@ -82,11 +82,30 @@ meteor_lists = []
 for j in range(0,7):
     new_list = []
     meteors_assets = os.listdir("./assets/Meteors/"+str(j))
+    meteors_assets = sorted(meteors_assets, key=lambda x: (int(re.sub('\D','',x)),x))
     for i in range(len(meteors_assets)):
         new_meteor = pygame.image.load("./assets/Meteors/" + str(j) + "/" + meteors_assets[i]).convert()
         new_meteor.set_colorkey(BLACK)
         new_list.append(new_meteor)
     meteor_lists.append(new_list)
+
+#exploding_sheet = pygame.image.load("./assets/Effects/3.png").convert()
+#exploding_sprites = []
+#for j in range(8):
+#    for i in range(8):
+#        image = pygame.Surface([100, 100]).convert()
+#        image.blit(exploding_sheet, (0,0), (100*i, 100*j, 100, 100))
+#        image.set_colorkey(BLACK)
+#        exploding_sprites.append(image)
+
+# OTHER EXPLOSION MODELS
+exploding_sheet = pygame.image.load("./assets/Effects/2.png").convert()
+exploding_sprites = []
+for i in range(17):
+    image = pygame.Surface([128, 128]).convert()
+    image.blit(exploding_sheet, (0,0), (128*i, 0, 128, 128))
+    image.set_colorkey(BLACK)
+    exploding_sprites.append(image)
 
 title_assets = os.listdir("./assets/Title")
 title_assets = sorted(title_assets, key=lambda x: (int(re.sub('\D','',x)),x))
@@ -171,7 +190,6 @@ def save_record(NEW_RECORD):
             record_file.close()
         
 
-
 # Classes
 class Ship(pygame.sprite.Sprite):
     """ Player sprite """
@@ -231,6 +249,29 @@ class Meteor(pygame.sprite.Sprite):
             self.anim = 0
         self.image = self.sprites[int(self.anim)]
         self.anim += 0.08
+
+
+class ExplodingMeteor(pygame.sprite.Sprite):
+    """ Animation of exploding meteors sprite """
+
+    def __init__(self, rect):
+        super().__init__()
+        self.anim = 0
+
+        self.sprites = exploding_sprites
+        self.image = self.sprites[0]
+        self.image.set_colorkey(BLACK)
+
+        self.rect = self.image.get_rect()
+        self.rect.center = rect.center
+
+    def update(self):
+        # Handle animation
+        if self.anim > 16: #63:
+            draw_sprites.remove(self)
+        else:
+            self.image = self.sprites[self.anim]
+            self.anim += 1
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -574,16 +615,21 @@ class GameplayScene():
             if not self.won and not self.collided:
                 self.score = (pygame.time.get_ticks() - self.initial_time)/1000
 
-                # Target down recognition
                 for missile in ammo_sprites:
+                    # Meteors explosion recognition
                     destroyed_meteor = pygame.sprite.spritecollide(missile, meteor_sprites, True)
                     for meteor in destroyed_meteor:
                         target_sound.play()
+                        # exploding animation
+                        explode = ExplodingMeteor(meteor.rect)
+                        draw_sprites.add(explode)
+
                         ammo_sprites.remove(missile)
                         draw_sprites.remove(missile)
                         if not self.won and not self.collided:
                             self.extra += 1
 
+                    # Target down recognition
                     destroyed_enemy = pygame.sprite.spritecollide(missile, enemy_sprites, True)
                     for enemy in destroyed_enemy:
                         # target_sound.play()
@@ -670,9 +716,10 @@ class GameplayScene():
                             draw_sprites.add(bullet)
                             bullet_sprites.add(bullet)
                 
-                bullet_sprites.update()
-                meteor_sprites.update()
-                enemy_sprites.update()
+                #bullet_sprites.update()
+                #meteor_sprites.update()
+                #enemy_sprites.update()
+                draw_sprites.update()
 
     def render(self):
         # Main Scene
