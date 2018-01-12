@@ -1,9 +1,47 @@
 /**
  * @file     main.c
  * @version  V0.1
- * @date     Nov 2017
+ * @date     JAN 2018
  * @author   Kelve T. Henrique
  *
+ * @mainpage XMC4500 + LIS3DH COMMUNICATION
+
+ * @brief Establishing the communication between LIS3DH sensor and Computer using the XMC4500 as intermediator that filters and set thresholders\n
+ *        on the raw data of sensor.
+
+ * @section Usage
+
+ * This project can be built from the command line,
+ * using a Makefile. The latter provides the following commands:
+
+ * @verbatim
+ * make                        # builds the project
+ * make debug                  # builds the project, start the debugger and print outputs into the './doc' directory
+ * make flash                  # flash the application
+ * make doc                    # generate this documentation
+ * make clean                  # remove intermediate files
+ * @endverbatim
+
+ * @section Folders
+
+ * The code is organized in various folders - checkout the comments below:
+
+ * @verbatim
+ * Makefile          # top level Makefile used for the command-line variant
+ * doxygen           # doxygen configuration file
+ * inc/              # header files
+ * src/              # source files
+ * bin/              # output folder - here you will find listings and binaries
+ * doc/              # generated documentation as well as some relevant prints and the linearity analysis
+ * system/           # CMSIS library, Infineon header files, linker script, etc.
+ * xmclib/           # XMC library
+ * @endverbatim
+ *
+ * @section Hardware
+ * 
+ * Some references to better understand the code
+ *
+ * @verbatim
  * GPIO toggle example flashes the leds of the board with a periodic rate.
  * LED1 is connected to P1.1
  * LED2 is connected to P1.0
@@ -17,8 +55,7 @@
  * LIS3DH_GND               GND
  * LIS3DH_SDA_PIN 			P0_6
  * LIS3DH_SCL_PIN 			P0_2
- *
- * History <br>
+ * @endverbatim
  *
 **/
 
