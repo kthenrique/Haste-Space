@@ -24,6 +24,11 @@ try:
         port = serial.Serial('COM1', 115200, timeout=0.0)
 except:
     print("SORRY! NO SUITABLE PORT WAS FOUND!")
+    print("Possible reasons:")
+    print("\t1. The necessary power and/or UART cables are disconnected")
+    print("\t2. You're using a not supported OS, i.e one that isn't Linux, Windows nor MacOS")
+    print("\t3. You connected a port while the game was already executed")
+    print("\t4. You don't have permission to access the USB's ports")
     sys.exit()
 
 # Initialise Pygame
@@ -824,7 +829,11 @@ while active_scene != None:
     dir_tick += d_time
 
     # Read port for coord.
-    inputs = port.read(10)
+    try:
+        inputs = port.read(10)
+    except:
+        print("ERROR: COULDN'T READ FROM PORT!")
+        break
 
     # flush buffer from port
     port.reset_input_buffer()
