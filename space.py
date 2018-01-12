@@ -302,10 +302,10 @@ class VersionScene():
     press   = "Press button 2 to continue. . ."
 
     # Define stamps
-    version_font = pygame.font.SysFont('arial', 20, True, True)
+    version_font = pygame.font.Font('./assets/Fonts/you.ttf', 20) #pygame.font.SysFont('arial', 20, True, True)
     version_text = version_font.render(version, True, ORANGE)
 
-    press_font = pygame.font.SysFont('arial', 20, True, True)
+    press_font = pygame.font.Font('./assets/Fonts/space.ttf', 20) #pygame.font.SysFont('arial', 20, True, True)
     press_text = press_font.render(press, True, BLUE)
     press_surface = pygame.Surface((500, 20)).convert()
     press_surface.fill(BLACK)
@@ -344,7 +344,7 @@ class VersionScene():
         screen.blit(self.version_text, [6*SCREEN_WIDTH/8, 3*SCREEN_HEIGHT/6])
         if self.show_msg == True:
             self.press_surface.set_alpha(self.count_title[1])
-            screen.blit(self.press_surface, [3*SCREEN_WIDTH/9, 5*SCREEN_HEIGHT/6])
+            screen.blit(self.press_surface, [5*SCREEN_WIDTH/20, 5*SCREEN_HEIGHT/6])
             
 
     def switch(self, nextScene):
@@ -763,8 +763,8 @@ class AboutScene():
 
     credits_font   = pygame.font.SysFont('purisa', 10, True, True)
     copyright_font = pygame.font.SysFont('Serif', 15, True, True)
-    body_font      = pygame.font.SysFont('Serif', 20, True, True)
-    body0_font     = pygame.font.SysFont('Serif', 25, True, True)
+    body_font      = pygame.font.Font('./assets/Fonts/you.ttf', 20) #pygame.font.SysFont('Serif', 20, True, True)
+    body0_font     = pygame.font.Font('./assets/Fonts/you.ttf', 25) #pygame.font.SysFont('Serif', 25, True, True)
 
     body0_text     = body0_font.render("Capture the star as fast as you can", True, YELLOW1)
     body1_text     = body_font.render("Button1: Shoot", True, YELLOW)
