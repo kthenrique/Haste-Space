@@ -50,10 +50,6 @@ screen = pygame.display.set_mode(SCREEN_SIZE)
 # Name the window
 pygame.display.set_caption('HASTE SPACE')
 
-# Define initial velocity of Meteors
-initial_velocity = 1
-d_time = 0.0
-
 # Load sounds and reduce volume of shooting
 shoot_sound = pygame.mixer.Sound("./assets/Audio/laser.ogg")
 target_sound = pygame.mixer.Sound("./assets/Audio/target.ogg")
