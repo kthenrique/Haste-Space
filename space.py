@@ -548,9 +548,13 @@ class GameplayScene():
         # Creating meteors
         for i in range(10):
             # new meteor
-            meteoroid = Meteor(random.randint(0, 6))
-            meteoroid.rect.x = random.randrange(SCREEN_WIDTH  - 100)
-            meteoroid.rect.y = random.randrange(SCREEN_HEIGHT - 300) - 350
+            while True:
+                meteoroid = Meteor(random.randint(0, 6))
+                meteoroid.rect.x = random.randrange(SCREEN_WIDTH  - 100)
+                meteoroid.rect.y = random.randrange(SCREEN_HEIGHT - 300) - 330
+                collision = pygame.sprite.spritecollide(meteoroid, meteor_sprites, False)
+                if len(collision) == 0:
+                    break
 
             # update list of sprites
             draw_sprites.add(meteoroid)
@@ -691,9 +695,13 @@ class GameplayScene():
                         draw_sprites.remove(meteors)
 
                         # new meteor
-                        meteoroid = Meteor(random.randint(0, 6))
-                        meteoroid.rect.x = random.randrange(SCREEN_WIDTH  - 100)
-                        meteoroid.rect.y = random.randrange(SCREEN_HEIGHT - 300) - 350
+                        while True:
+                            meteoroid = Meteor(random.randint(0, 6))
+                            meteoroid.rect.x = random.randrange(SCREEN_WIDTH  - 100)
+                            meteoroid.rect.y = random.randrange(SCREEN_HEIGHT - 300) - 330
+                            collision = pygame.sprite.spritecollide(meteoroid, meteor_sprites, False)
+                            if len(collision) == 0:
+                                break
 
                         # update list of sprites
                         draw_sprites.add(meteoroid)
