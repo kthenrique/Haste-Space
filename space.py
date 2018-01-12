@@ -54,10 +54,17 @@ shoot_sound = pygame.mixer.Sound("./assets/Audio/laser.ogg")
 target_sound = pygame.mixer.Sound("./assets/Audio/target.ogg")
 gameover_sound = pygame.mixer.Sound("./assets/Audio/gameover.ogg")
 won_sound = pygame.mixer.Sound("./assets/Audio/won.ogg")
+menus_sound = pygame.mixer.Sound("./assets/Audio/menus.ogg")
+version_sound = pygame.mixer.Sound("./assets/Audio/version.ogg")
+buttons_sound = pygame.mixer.Sound("./assets/Audio/buttons.ogg")
+game_sound = pygame.mixer.Sound("./assets/Audio/game.ogg")
 
 shoot_sound.set_volume(0.1)
 target_sound.set_volume(0.2)
 won_sound.set_volume(0.7)
+
+# Avoiding sound delay
+version_sound.play(-1)
 
 # Load graphics
 enemy_imgs = pygame.image.load("./assets/Enemy/0.png").convert()
@@ -136,7 +143,7 @@ else:
 # Kimberly Geswein free font found at www.1001fonts.com/textured-fonts
 record_font = pygame.font.Font('./assets/Fonts/Chunk.ttf', 130)
 if RECORD == 0:
-    record_text = record_font.render("NOT PLAYED YET", True, YELLOW1)
+    record_text = record_font.render("NO DATA", True, YELLOW1)
 else:
     record_text = record_font.render("%.2f"%(RECORD) + " s", True, YELLOW1)
 
@@ -336,7 +343,8 @@ class VersionScene():
             
 
     def switch(self, nextScene):
-            self.next = nextScene
+        #version_sound.stop()
+        self.next = nextScene
 
 
 class MenuScene():
@@ -365,6 +373,8 @@ class MenuScene():
             image.set_colorkey(BLACK)
             self.sprites.append(image)
 
+        #menus_sound.play(-1)
+
     def inputHandler(self, inputs):
         for direction in str(inputs):
             if direction == '2':
@@ -377,9 +387,9 @@ class MenuScene():
                 if self.active_button == 3:
                    self.switch(None)
             elif direction == 'D':
-               self.one_down = True
+                self.one_down = True
             elif direction == 'U':
-               self.one_up = True
+                self.one_up = True
 
     def update(self):
         # Handling animation of title
@@ -408,7 +418,9 @@ class MenuScene():
         if self.read == 15:
             if self.one_down:
                 self.active_button += 1
+                buttons_sound.play()
             if self.one_up:
+                buttons_sound.play()
                 self.active_button -= 1
             self.read = 0
 
@@ -416,8 +428,10 @@ class MenuScene():
         self.one_up   = False
 
         if self.active_button >= 4:
+            buttons_sound.play()
             self.active_button = 0
         if self.active_button <= -1:
+            buttons_sound.play()
             self.active_button = 3
 
     def render(self):
@@ -443,6 +457,7 @@ class MenuScene():
 
 
     def switch(self, nextScene):
+        #menus_sound.stop()
         self.next = nextScene
 
 
@@ -511,10 +526,13 @@ class GameplayScene():
         star_sprite.add(self.star)
         star_sprite.update()
 
+        version_sound.stop()
+        game_sound.play(-1)
+
     def inputHandler(self, inputs):#, self.player, draw_sprites, ammo_sprites):
         # Control Ship with sensor
         for direction in str(inputs):
-            if self.pause is False:
+            if self.pause is False and (not self.won and not self.collided):
                 if direction == 'R':
                     self.player.rect.x += 2
                 elif direction == 'r':
@@ -551,126 +569,124 @@ class GameplayScene():
             if not self.won and not self.collided:
                 self.score = (pygame.time.get_ticks() - self.initial_time)/1000
 
-            # Target down recognition
-            for missile in ammo_sprites:
-                destroyed_meteor = pygame.sprite.spritecollide(missile, meteor_sprites, True)
-                for meteor in destroyed_meteor:
-                    target_sound.play()
-                    ammo_sprites.remove(missile)
-                    draw_sprites.remove(missile)
-                    if not self.won and not self.collided:
-                        self.extra += 1
+                # Target down recognition
+                for missile in ammo_sprites:
+                    destroyed_meteor = pygame.sprite.spritecollide(missile, meteor_sprites, True)
+                    for meteor in destroyed_meteor:
+                        target_sound.play()
+                        ammo_sprites.remove(missile)
+                        draw_sprites.remove(missile)
+                        if not self.won and not self.collided:
+                            self.extra += 1
 
-                destroyed_enemy = pygame.sprite.spritecollide(missile, enemy_sprites, True)
-                for enemy in destroyed_enemy:
-                    # target_sound.play()
-                    ammo_sprites.remove(missile)
-                    draw_sprites.remove(missile)
-                    if not self.won and not self.collided:
-                        self.extra += 2
-                    self.numb_enemy -= 1
-                    if self.numb_enemy == 0:
-                        self.no_enemy = True
-                    
-                if missile.rect.y < (-1 * missile.rect.size[1]):
-                    ammo_sprites.remove(missile)
-                    draw_sprites.remove(missile)
+                    destroyed_enemy = pygame.sprite.spritecollide(missile, enemy_sprites, True)
+                    for enemy in destroyed_enemy:
+                        # target_sound.play()
+                        ammo_sprites.remove(missile)
+                        draw_sprites.remove(missile)
+                        if not self.won and not self.collided:
+                            self.extra += 2
+                        self.numb_enemy -= 1
+                        if self.numb_enemy == 0:
+                            self.no_enemy = True
+                        
+                    if missile.rect.y < (-1 * missile.rect.size[1]):
+                        ammo_sprites.remove(missile)
+                        draw_sprites.remove(missile)
 
-            # update position of missiles
-            ammo_sprites.update()
-            # Determine edges avoiding scaping of scenario
-            if self.player.rect.x > SCREEN_WIDTH - self.player.rect.size[0]:
-                self.player.rect.x = SCREEN_WIDTH - self.player.rect.size[0]
-            if self.player.rect.x < 0:
-                self.player.rect.x = 0
-            if self.player.rect.y < 0:
-                self.player.rect.y = 0
-            if self.player.rect.y > SCREEN_HEIGHT - self.player.rect.size[1]:
-                self.player.rect.y = SCREEN_HEIGHT - self.player.rect.size[1]
+                # update position of missiles
+                ammo_sprites.update()
+                # Determine edges avoiding scaping of scenario
+                if self.player.rect.x > SCREEN_WIDTH - self.player.rect.size[0]:
+                    self.player.rect.x = SCREEN_WIDTH - self.player.rect.size[0]
+                if self.player.rect.x < 0:
+                    self.player.rect.x = 0
+                if self.player.rect.y < 0:
+                    self.player.rect.y = 0
+                if self.player.rect.y > SCREEN_HEIGHT - self.player.rect.size[1]:
+                    self.player.rect.y = SCREEN_HEIGHT - self.player.rect.size[1]
 
-            # Collision player-meteor recognition
-            collision = pygame.sprite.spritecollide(self.player, meteor_sprites, False)
-            if len(collision) != 0 and self.won != True:
-                self.collided = True
-
-            # Collision player-enemy recognition
-            collision = pygame.sprite.spritecollide(self.player, enemy_sprites, False)
-            if len(collision) != 0 and self.won != True:
-                self.collided = True
-
-            # Collision player-star recognition
-            collision = pygame.sprite.spritecollide(self.player, star_sprite, False)
-            if len(collision) != 0 and self.collided != True:
-                self.won = True
-                star_sprite.remove(self.star)
-                draw_sprites.remove(self.star)
-
-            # Collision player-bullet recognition
-            for bullet in bullet_sprites:
-                collision = pygame.sprite.spritecollide(self.player, bullet_sprites, False)
+                # Collision player-meteor recognition
+                collision = pygame.sprite.spritecollide(self.player, meteor_sprites, False)
                 if len(collision) != 0 and self.won != True:
                     self.collided = True
 
-                if bullet.rect.y > (bullet.rect.size[1] + SCREEN_HEIGHT):
-                    bullet_sprites.remove(bullet)
-                    draw_sprites.remove(bullet)
+                # Collision player-enemy recognition
+                collision = pygame.sprite.spritecollide(self.player, enemy_sprites, False)
+                if len(collision) != 0 and self.won != True:
+                    self.collided = True
 
-            # looping of meteors
-            for meteors in meteor_sprites:
-                if meteors.rect.y > (meteors.rect.size[1] + SCREEN_HEIGHT):
-                    meteor_sprites.remove(meteors)
-                    draw_sprites.remove(meteors)
+                # Collision player-star recognition
+                collision = pygame.sprite.spritecollide(self.player, star_sprite, False)
+                if len(collision) != 0 and self.collided != True:
+                    self.won = True
+                    star_sprite.remove(self.star)
+                    draw_sprites.remove(self.star)
 
-                    # new meteor
-                    meteoroid = Meteor(random.randint(0, 6))
-                    meteoroid.rect.x = random.randrange(SCREEN_WIDTH  - 100)
-                    meteoroid.rect.y = random.randrange(SCREEN_HEIGHT - 300) - 350
+                # Collision player-bullet recognition
+                for bullet in bullet_sprites:
+                    collision = pygame.sprite.spritecollide(self.player, bullet_sprites, False)
+                    if len(collision) != 0 and self.won != True:
+                        self.collided = True
 
-                    # update list of sprites
-                    draw_sprites.add(meteoroid)
-                    meteor_sprites.add(meteoroid)
-                meteors.rect.y += 1
+                    if bullet.rect.y > (bullet.rect.size[1] + SCREEN_HEIGHT):
+                        bullet_sprites.remove(bullet)
+                        draw_sprites.remove(bullet)
 
-            # Make enemies shoot
-            self.counter += 1
-            if self.counter > 50:
-                self.counter = 0
-                if self.no_enemy is False:
-                    self.t += 1 
-                    if self.t > 3:
-                        self.t = 0
-                    if self.enemy[self.t] in enemy_sprites:
-                        bullet = Bullet()
-                        self.bullet.append(bullet)
-                        bullet.rect.x = self.enemy[self.t].rect.x + self.enemy[self.t].rect.size[0]/2
-                        bullet.rect.y = self.enemy[self.t].rect.y
-                        draw_sprites.add(bullet)
-                        bullet_sprites.add(bullet)
-             
-            bullet_sprites.update()
-            meteor_sprites.update()
-            enemy_sprites.update()
+                # looping of meteors
+                for meteors in meteor_sprites:
+                    if meteors.rect.y > (meteors.rect.size[1] + SCREEN_HEIGHT):
+                        meteor_sprites.remove(meteors)
+                        draw_sprites.remove(meteors)
 
-        else:
-            pass
+                        # new meteor
+                        meteoroid = Meteor(random.randint(0, 6))
+                        meteoroid.rect.x = random.randrange(SCREEN_WIDTH  - 100)
+                        meteoroid.rect.y = random.randrange(SCREEN_HEIGHT - 300) - 350
+
+                        # update list of sprites
+                        draw_sprites.add(meteoroid)
+                        meteor_sprites.add(meteoroid)
+                    meteors.rect.y += 1
+
+                # Make enemies shoot
+                self.counter += 1
+                if self.counter > 50:
+                    self.counter = 0
+                    if self.no_enemy is False:
+                        self.t += 1 
+                        if self.t > 3:
+                            self.t = 0
+                        if self.enemy[self.t] in enemy_sprites:
+                            bullet = Bullet()
+                            self.bullet.append(bullet)
+                            bullet.rect.x = self.enemy[self.t].rect.x + self.enemy[self.t].rect.size[0]/2
+                            bullet.rect.y = self.enemy[self.t].rect.y
+                            draw_sprites.add(bullet)
+                            bullet_sprites.add(bullet)
+                
+                bullet_sprites.update()
+                meteor_sprites.update()
+                enemy_sprites.update()
 
     def render(self):
         # Main Scene
         screen.blit(bg_gameplay, [0, 0])
+        draw_sprites.draw(screen)
 
         if self.won and not self.collided:
+            game_sound.stop()
             save_record(self.score + self.extra)
             if not self.sound_play:
                 won_sound.play()
                 self.sound_play = True
             screen.blit(self.winning_text, [self.gameover_text_x, self.gameover_text_y])
 
-        draw_sprites.draw(screen)
-
         score_text = self.score_font.render("Time: " + "%.2f" % (self.score) + " +" + str(self.extra), True, WHITE)
         screen.blit(score_text, [10, 10])
 
         if self.collided and not self.won:
+            game_sound.stop()
             if not self.sound_play:
                 gameover_sound.play()
                 self.sound_play = True
@@ -694,7 +710,14 @@ class GameplayScene():
             bullet_sprites.remove(sprite)
             sprite = None
             
-
+        # Pause all sounds
+        target_sound.stop() 
+        shoot_sound.stop()
+        gameover_sound.stop()
+        won_sound.stop()
+        game_sound.stop()
+        
+        version_sound.play(-1)
         self.next = nextScene
 
 
