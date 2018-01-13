@@ -9,7 +9,7 @@ import math
 import re
 from sys import platform as _platform
 
-# Set the port communication
+# Set the port communication =======================================
 try:
     # Set up the port for linux
     if _platform == "linux" or _platform == "linux2":
@@ -31,7 +31,7 @@ except:
     print("\t4. You don't have permission to access the USB's ports")
     sys.exit()
 
-# Initialise Pygame
+# Initialise Pygame ================================================
 pygame.init()
 
 # Define relevant colors
@@ -39,7 +39,6 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 ORANGE= (233, 166, 31)
 BLUE  = (95, 198, 207)
-BLUE1 = (0, 15, 110)
 YELLOW =(218, 224, 25)
 YELLOW1=(228, 235, 26)
 
@@ -48,9 +47,9 @@ SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 screen = pygame.display.set_mode(SCREEN_SIZE)
 
 # Name the window
-pygame.display.set_caption('HASTE SPACE')
+pygame.display.set_caption('HASTE-SPACE')
 
-# Load sounds and reduce volume of shooting
+# Load sounds and reduce volume of shooting ========================
 shoot_sound = pygame.mixer.Sound("./assets/Audio/laser.ogg")
 target_sound = pygame.mixer.Sound("./assets/Audio/target.ogg")
 gameover_sound = pygame.mixer.Sound("./assets/Audio/gameover.ogg")
@@ -67,7 +66,7 @@ won_sound.set_volume(0.7)
 # Avoiding sound delay
 version_sound.play(-1)
 
-# Load graphics
+# Load graphics ===================================================
 enemy_imgs = pygame.image.load("./assets/Enemy/0.png").convert()
 bullet_img = pygame.image.load("./assets/Enemy/1.png").convert()
 star_img   = pygame.image.load("./assets/star.png").convert()
@@ -142,7 +141,7 @@ bg_version = pygame.image.load("./assets/Backdrop/bg_21.png").convert()
 bg_about = pygame.image.load("./assets/Backdrop/bg_20.png").convert()
 bg_record = pygame.image.load("./assets/Backdrop/bg_6.png").convert()
 
-# For handling of sprites - groups
+# For handling of sprites - groups ============================================
 draw_sprites   = pygame.sprite.Group()      # sprites to draw
 meteor_sprites = pygame.sprite.Group()      # sprites of meteors
 ammo_sprites   = pygame.sprite.Group()      # sprites of missiles
@@ -186,7 +185,7 @@ def save_record(NEW_RECORD):
             record_file.close()
         
 
-# Classes
+# Actors Classes ==================================================
 class Ship(pygame.sprite.Sprite):
     """ Player sprite """
 
@@ -323,6 +322,7 @@ class Star(pygame.sprite.Sprite):
         self.rect.x = SCREEN_WIDTH/2 
 
 
+# ===============================================================
 # Declaring the various scenes of the game:
 #   - VersionScene
 #   - MenuScene
@@ -863,24 +863,18 @@ class AboutScene():
         self.next = nextScene
 
 
+# ===============================================================
 # Get the Clock object
 clock = pygame.time.Clock()
-
 
 # Variables
 fps = 60                            # Frames per Second
 active_scene = VersionScene()       # state of game
 
-
-dir_tick = 0.0
-
+# LOOP
 while active_scene != None:
     # Limit the framerate
     d_time_ms = clock.tick(fps)
-
-    # Adjusting Meteors on the screen
-    d_time = d_time_ms / 8
-    dir_tick += d_time
 
     # Read port for coord.
     try:
