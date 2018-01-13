@@ -513,14 +513,14 @@ class GameplayScene():
     # Define stamps
     score_font = pygame.font.SysFont('purisa', 25, True, True)
     score_text = score_font.render("Time: " + "%.2f" % (score) + " +" + str(extra), True, WHITE)
-    gameover_font = pygame.font.SysFont('symbola', 55, True, True)
-    gameover_text = gameover_font.render("Game Over", True, WHITE)
-    winning_font = pygame.font.SysFont('symbola', 55, True, True)
-    winning_text = winning_font.render("YOU WON", True, WHITE)
+
+    end_font = pygame.font.Font('./assets/Fonts/you.ttf', 90)
+    gameover_text =end_font.render("Game Over", True, WHITE)
+    winning_text = end_font.render("YOU WON", True, WHITE)
 
     # gameover_text_rect = gameover_text.get_rect()
-    gameover_text_x = screen.get_width() / 2 - 100 # gameover_text_rect.width / 2
-    gameover_text_y = screen.get_height() / 2 - 100 # gameover_text_rect.height / 2
+    gameover_text_x = 5*screen.get_width()/20  # gameover_text_rect.width / 2
+    gameover_text_y = 9*screen.get_height()/20 # gameover_text_rect.height / 2
 
     def __init__(self):
         self.next = self
