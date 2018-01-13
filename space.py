@@ -605,8 +605,11 @@ class GameplayScene():
                 elif direction == '2':
                     self.pause = not self.pause
             elif direction == '2':
-                self.pause = not self.pause
-            elif direction == '1':
+                if self.won or self.collided:
+                    self.switch(MenuScene())
+                else:
+                    self.pause = not self.pause
+            elif direction == '1' and (not self.won and not self.collided):
                 self.switch(MenuScene())
 
     def update(self):#, meteor_sprites, ammo_sprites, draw_sprites):
