@@ -1,7 +1,7 @@
 /******************** (C) COPYRIGHT 2012 STMicroelectronics ********************
 * File Name          : LIS3DH_driver.c
 * Author             : MSH Application Team
-* Author             : Fabio Tota - (MODIFIED BY: KELVE TORRES HENRIQUE)
+* Author             : Fabio Tota - (MODIFIED BY: KELVE HENRIQUE)
 * Version            : $Revision:$
 * Date               : $Date:$
 * Description        : LIS3DH driver file

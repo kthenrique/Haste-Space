@@ -73,48 +73,6 @@ uint8_t config_freefall(void){
     LIS3DH_WriteReg(LIS3DH_INT1_THS,  0x16);
     LIS3DH_WriteReg(LIS3DH_INT1_DURATION, 0x03);
     LIS3DH_WriteReg(LIS3DH_INT1_CFG,  0x95);
-//    
-//    // High-pass filter disabled
-//    response = LIS3DH_HPFAOI1Enable(MEMS_DISABLE);
-//    if(response != 1){
-//        return 1;
-//    }
-//
-//    // Interrupt driven to INT1 pad
-//    response = LIS3DH_SetInt1Pin(0x40);
-//    if(response != 1){
-//        return 1;
-//    }
-//
-//    // FS = 2g
-//    response = LIS3DH_SetFullScale(LIS3DH_FULLSCALE_2);
-//    if(response != 1){
-//        return 1;
-//    }
-//
-//    // Interrupt latched
-//    response = LIS3DH_Int1LatchEnable(MEMS_ENABLE);
-//    if(response != 1){
-//        return 1;
-//    }
-//
-//    // Set free-fall threshold = 350mg
-//    response = LIS3DH_SetInt1Threshold(0x16);
-//    if(response != 1){
-//        return 1;
-//    }
-//
-//    // Set minimum event duration - 30 msec
-//    response = LIS3DH_SetInt1Duration(0x1);
-//    if(response != 1){
-//        return 1;
-//    }
-//
-//    // Configure free-fall recognition
-//    response = LIS3DH_SetIntConfiguration(0x95);
-//    if(response != 1){
-//        return 1;
-//    }
     
     return 0;
 }
