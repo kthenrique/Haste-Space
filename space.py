@@ -65,6 +65,7 @@ won_sound.set_volume(0.7)
 
 # Avoiding sound delay
 version_sound.play(-1)
+version_sound.set_volume(0.7)
 
 # Load graphics ===================================================
 enemy_imgs = pygame.image.load("./assets/Enemy/0.png").convert()
@@ -574,6 +575,7 @@ class GameplayScene():
 
         version_sound.stop()
         game_sound.play(-1)
+        game_sound.set_volume(0.7)
 
     def inputHandler(self, inputs):#, self.player, draw_sprites, ammo_sprites):
         # Control Ship with sensor
@@ -777,6 +779,7 @@ class GameplayScene():
         game_sound.stop()
         
         version_sound.play(-1)
+        version_sound.set_volume(0.7)
         self.next = nextScene
 
 
