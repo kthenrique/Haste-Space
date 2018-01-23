@@ -62,6 +62,7 @@ game_sound = pygame.mixer.Sound("./assets/Audio/game.ogg")
 shoot_sound.set_volume(0.1)
 target_sound.set_volume(0.2)
 won_sound.set_volume(0.7)
+gameover_sound.set_volume(0.3)
 
 # Avoiding sound delay
 version_sound.play(-1)
