@@ -1,4 +1,11 @@
 # Haste-Space
+![version_screen][version]
+![menus_screen][menus]
+![game_screen][game]
+
+[version]: https://github.com/kthenrique/Haste-Space/blob/master/assets/version.gif "Version_Screen"
+[menus]:   https://github.com/kthenrique/Haste-Space/blob/master/assets/menus.gif "Version_Screen"
+[game]:    https://github.com/kthenrique/Haste-Space/blob/master/assets/game.gif "Version_Screen"
 
 ### Motivation
   - University project at the FH Technikum Wien
