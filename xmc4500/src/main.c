@@ -53,8 +53,8 @@
  * I2C communication with the LIS3DH Accelerometer Sensor
  * LIS3DH_Vin               VDD3
  * LIS3DH_GND               GND
- * LIS3DH_SDA_PIN 			P0_6
- * LIS3DH_SCL_PIN 			P0_2
+ * LIS3DH_SDA_PIN 			P0_5
+ * LIS3DH_SCL_PIN 			P0_11
  * @endverbatim
  *
 **/
