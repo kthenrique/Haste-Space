@@ -85,15 +85,6 @@ for j in range(0,7):
         new_list.append(new_meteor)
     meteor_lists.append(new_list)
 
-#exploding_sheet = pygame.image.load("./assets/Effects/3.png").convert()
-#exploding_sprites = []
-#for j in range(8):
-#    for i in range(8):
-#        image = pygame.Surface([100, 100]).convert()
-#        image.blit(exploding_sheet, (0,0), (100*i, 100*j, 100, 100))
-#        image.set_colorkey(BLACK)
-#        exploding_sprites.append(image)
-
 # OTHER EXPLOSION MODELS
 exploding_sheet = pygame.image.load("./assets/Effects/2.png").convert()
 exploding_sprites = []
@@ -386,7 +377,6 @@ class VersionScene():
             
 
     def switch(self, nextScene):
-        #version_sound.stop()
         self.next = nextScene
 
 
@@ -415,8 +405,6 @@ class MenuScene():
             image.blit(self.sprite_sheet, (0,0), (250*i, 0, 250, 250))
             image.set_colorkey(BLACK)
             self.sprites.append(image)
-
-        #menus_sound.play(-1)
 
     def inputHandler(self, inputs):
         for direction in str(inputs):
@@ -500,7 +488,6 @@ class MenuScene():
 
 
     def switch(self, nextScene):
-        #menus_sound.stop()
         self.next = nextScene
 
 
@@ -614,7 +601,7 @@ class GameplayScene():
             elif direction == '1' and (not self.won and not self.collided):
                 self.switch(MenuScene())
 
-    def update(self):#, meteor_sprites, ammo_sprites, draw_sprites):
+    def update(self):
         if self.pause is False:
             # Handle score
             if not self.won and not self.collided:
@@ -637,7 +624,11 @@ class GameplayScene():
                     # Target down recognition
                     destroyed_enemy = pygame.sprite.spritecollide(missile, enemy_sprites, True)
                     for enemy in destroyed_enemy:
-                        # target_sound.play()
+                        # exploding animation: Using same anim and sound as for meteors
+                        explode = ExplodingMeteor(enemy.rect)
+                        draw_sprites.add(explode)
+                        target_sound.play()
+
                         ammo_sprites.remove(missile)
                         draw_sprites.remove(missile)
                         if not self.won and not self.collided:
@@ -725,9 +716,6 @@ class GameplayScene():
                             draw_sprites.add(bullet)
                             bullet_sprites.add(bullet)
                 
-                #bullet_sprites.update()
-                #meteor_sprites.update()
-                #enemy_sprites.update()
                 draw_sprites.update()
 
     def render(self):
