@@ -23,6 +23,7 @@
     - SEGGER J-Link
     - gcc-arm-none-eabi-5_4-2016q3  
 
+### Configuration
 ![configuration][circuit]
 
 [circuit]: https://github.com/kthenrique/Haste-Space/blob/master/xmc4500/doc/config.png "Config"
