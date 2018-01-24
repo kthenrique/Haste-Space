@@ -3,7 +3,7 @@ __pycache__
 
 # doc and bin files inside xmc4500
 /xmc4500/bin/
-/xmc4500/doc/
+/xmc4500/doc/html/
 
 # automated generated files of Makefile 
 *.d

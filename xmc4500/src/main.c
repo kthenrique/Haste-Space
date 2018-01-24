@@ -39,7 +39,8 @@
  *
  * @section Hardware
  * 
- * Some references to better understand the code
+ * Some references to better understand the code and configure the HW
+ * \image html doc/config.png "caption"
  *
  * @verbatim
  * GPIO toggle example flashes the leds of the board with a periodic rate.
