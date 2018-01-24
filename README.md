@@ -23,6 +23,10 @@
     - SEGGER J-Link
     - gcc-arm-none-eabi-5_4-2016q3  
 
+![configuration][circuit]
+
+[circuit]: https://github.com/kthenrique/Haste-Space/blob/master/xmc4500/doc/config.png "Config"
+
 ### How to Play
   - The goal is to capture the star as fast as you can
   - You should avoid shooting meteors and other spaceships as it increases the timer at the end
