@@ -759,6 +759,9 @@ class GameplayScene():
         for sprite in bullet_sprites:
             bullet_sprites.remove(sprite)
             sprite = None
+        for sprite in ammo_sprites:
+            ammo_sprites.remove(sprite)
+            sprite = None
             
         # Pause all sounds
         target_sound.stop() 
