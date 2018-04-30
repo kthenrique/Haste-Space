@@ -46,3 +46,7 @@ $ tar xjf gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2
 $ echo 'export PATH=$HOME/Bin/gcc-arm-none-eabi-5_4-2016q3/bin:$PATH' >> $HOME/.bashrc  
 $ rm -rf gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2  
 ```
+ - Or if you're using Ubuntu 18.04, just install gcc-arm-none-eabi:
+```bash
+$ sudo apt install gcc-arm-none-eabi
+```
